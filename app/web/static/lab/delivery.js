@@ -1,6 +1,6 @@
 /* AI4En · 单词快递员
- * 参考「水果快递员」的玩法：在草地上找齐 3 个目标单词，送回小店。
- * 目标词与干扰词都取自当前课例的词表，水果标签用本课词义，所以每节课、每一关都不一样。
+ * 玩法：在草地与小路上找齐 3 个目标单词，送回 SHOP，共 3 关。
+ * 目标词与干扰词都取自「⚙️ 词表设置」，换一份词表就换一套内容。
  * 逻辑与渲染分离：dlvUpdate 只改状态，dlvRender 才碰 canvas，便于在 Node 里跑自检。
  */
 'use strict';
@@ -766,7 +766,7 @@ var DLV_HUD = null;
 
 function dlvHudHtml() {
   return '<div class="dlv-hud">' +
-    '<div class="dlv-title">🍎 Word Courier</div>' +
+    '<div class="dlv-title">🛵 Word Courier</div>' +
     '<div class="dlv-stats">' +
     '<span id="dlv-level">LEVEL 1/3</span>' +
     '<span id="dlv-score">SCORE 0</span>' +

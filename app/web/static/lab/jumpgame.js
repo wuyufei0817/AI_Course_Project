@@ -53,7 +53,9 @@ window.JumpGame = (function () {
 
   function buildFruits(target) {
     const slots = shuffle(SLOTS).slice(0, 8);
-    const others = (ANIMALS.active ? ANIMALS.words : CATALOG).filter(f => f.en !== target.en);
+    const pool = currentPool();
+    let others = pool.filter(f => String(f.en).toLowerCase() !== String(target.en).toLowerCase());
+    if (!others.length) others = pool;
     const list = [];
     for (let i = 0; i < 3; i++) {
       list.push({ ...target, x: slots[i].x, y: slots[i].y, target: true, taken: false });
@@ -95,7 +97,7 @@ window.JumpGame = (function () {
     els.score.textContent = st.score;
     els.time.textContent = Math.ceil(st.timeLeft);
     els.hearts.textContent = "❤".repeat(st.hearts) + "♡".repeat(3 - st.hearts);
-    els.objective.innerHTML = `Collect: ${st.target.en} <b>${st.collected}/3</b>`;
+    els.objective.innerHTML = `找到「<b>${st.target.cn || st.target.en}</b>」 ${st.collected}/3 <span style="opacity:.7">（找英文单词）</span>`;
   }
 
   function loseHeart() {
@@ -256,16 +258,32 @@ window.JumpGame = (function () {
   function drawFruit(ctx, f) {
     ctx.save();
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.font = "30px serif";
-    ctx.fillText(f.emoji, f.x, f.y);
-    ctx.font = "12px 'Microsoft YaHei'";
+    /* 不再画单词对应的图标：看中文找英文，图标会直接泄底 */
+    const palette = ["#e2725b", "#e56b7f", "#f0c76a", "#9a80c2", "#ef9b52", "#bcd06a", "#7fb9a8", "#dd8fb0"];
+    let h = 0;
+    const seed = String(f.en || "");
+    for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) % 997;
+    ctx.fillStyle = palette[h % palette.length];
+    ctx.beginPath();
+    ctx.arc(f.x, f.y - 2, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.35)";
+    ctx.beginPath();
+    ctx.arc(f.x - 5, f.y - 7, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#6f9f78";
+    ctx.beginPath();
+    ctx.ellipse(f.x + 7, f.y - 15, 6, 3.5, -0.6, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.font = "bold 13px 'Trebuchet MS','Microsoft YaHei'";
     const label = f.en;
     const tw = ctx.measureText(label).width;
     const lw = tw + 18, lh = 22;
-    ctx.fillStyle = "rgba(255,255,255,.92)";
-    roundRect(ctx, f.x - lw / 2, f.y + 18, lw, lh, 8); ctx.fill();
-    ctx.fillStyle = "#4a5675";
-    ctx.fillText(label, f.x, f.y + 30);
+    ctx.fillStyle = "rgba(255,255,255,.95)";
+    roundRect(ctx, f.x - lw / 2, f.y + 14, lw, lh, 8); ctx.fill();
+    ctx.fillStyle = "#3b4a6b";
+    ctx.fillText(label, f.x, f.y + 26);
     ctx.restore();
   }
 
@@ -356,11 +374,33 @@ window.JumpGame = (function () {
     if (e.code === "ArrowRight" || e.code === "KeyD") keys.right = false;
   }
 
-  /* ---------------- 挂载 ---------------- */
-  const levels = ANIMALS.active ? ANIMALS.words : LEVELS;
+  /* ---------------- 词池：优先用「⚙️ 词表设置」，没设置时用内置 ---------------- */
+  let levels = LEVELS;
 
+  function currentPool() {
+    if (window.WordSet) {
+      const custom = window.WordSet.words().map(w => ({
+        en: w.en, cn: w.zh || "", emoji: window.WordSet.emojiFor(w.en) || ""
+      }));
+      if (custom.length >= 3) return custom;
+    }
+    const base = ANIMALS.active ? ANIMALS.words : LEVELS;
+    return base.map(w => ({
+      en: w.en, cn: w.cn || "",
+      emoji: w.emoji || (window.WordSet ? window.WordSet.emojiFor(w.en) : "") || ""
+    }));
+  }
+
+  function refreshLevels() {
+    const pool = currentPool();
+    levels = pool.slice(0, Math.min(4, pool.length));
+    if (!levels.length) levels = LEVELS;
+  }
+
+  /* ---------------- 挂载 ---------------- */
   function mount(root) {
     stop();
+    refreshLevels();
     root.innerHTML = `
       <div class="jg">
         <div class="jg-head">
@@ -438,7 +478,7 @@ window.JumpGame = (function () {
     showOverlay(`<div class="jg-modal">
       <div class="jg-pause-ico">🏝</div>
       <h3>单词跳跳岛</h3>
-      <p>移动小人，收集与目标单词对应的${ANIMALS.active ? "动物词卡" : "水果"}。<br>认准中文标签，别撞到小怪哦！</p>
+      <p>屏幕上方给出中文，去场上找出对应的<b>英文单词</b>，收集 3 个即可过关。<br>词卡来自「⚙️ 词表设置」，别撞到小怪哦！</p>
       <div class="jg-modal-btns"><button class="btn primary" data-act="start">开始游戏</button></div>
     </div>`);
     draw();
@@ -456,5 +496,5 @@ window.JumpGame = (function () {
     keys.left = keys.right = false;
   }
 
-  return { mount, stop };
+  return { mount, stop, refresh: refreshLevels };
 })();
