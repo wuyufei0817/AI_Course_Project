@@ -45,7 +45,8 @@ function teacherHomeView(lessons) {
 async function lessonView(id, tab) {
   var data = await api('/api/lessons/' + id);
   var lesson = data.lesson;
-  if (S.lessonId !== id) {
+  if (S.lessonId !== id || !S.plan || S.twLoadedLesson !== id) {
+    S.twLoadedLesson = id;
     S.lessonId = id;
     S.plan = clone(lesson.plan.data || {});
     S.slides = clone((lesson.materials.slides || {}).data || []);
@@ -53,6 +54,8 @@ async function lessonView(id, tab) {
     S.slideIdx = 0;
     S.results = null;
     S.resultTaskId = null;
+    S.taskForm = null;
+    S.logForm = null;
     S.notice = null;
     S.cond = {
       grade: lesson.grade, topic: lesson.topic, duration: lesson.duration,
@@ -63,15 +66,26 @@ async function lessonView(id, tab) {
   S.planSource = lesson.plan.source;
   S.tasks = lesson.tasks;
 
-  if (tab === 'results') return resultsTab(lesson, '');
-  if (tab === 'activities') return activitiesTab(lesson);
-  if (tab === 'slides') return slidesTab(lesson);
-  if (tab === 'exercises') return exercisesTab(lesson);
+  // 放弃修改可能触发课例重置；初始化完成后再载入用户选择的草稿。
+  var requestedDraft = S.taskDraftToOpen;
+  S.taskDraftToOpen = null;
+  if (tab === 'tasks' && requestedDraft && requestedDraft.lessonId === id) {
+    var draft = S.tasks.find(function (t) { return t.id === requestedDraft.taskId && t.status === 'draft'; });
+    if (draft) S.taskForm = clone(draft);
+  }
+
+  if (tab === 'results') return resultsTab(lesson);
+  if (tab === 'reviews') return reviewsTab(lesson);
+  if (tab === 'logs') return teachingLogsTab(lesson);
+  if (tab === 'activities') return teacherActivitiesTab(lesson);
+  if (tab === 'slides') return slidesTab(lesson) + teacherResources(lesson);
+  if (tab === 'exercises') return exercisesTab(lesson) + await dictationSection(lesson);
   if (tab === 'tasks') return tasksTab(lesson);
   return planTab(lesson);
 }
 
 function lessonTabs(lesson, tab) {
+  if (S.user.role === 'teacher' && typeof teacherModuleHeading === 'function') return teacherModuleHeading(tab);
   var items = [['plan', '教案备课'], ['slides', '课件资源'], ['activities', '课堂活动'],
                ['exercises', '练习与小测'], ['tasks', '任务发布'], ['results', '结果与日志']];
   return '<div class="tabs">' + items.map(function (it) {

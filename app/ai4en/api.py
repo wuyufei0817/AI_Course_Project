@@ -336,6 +336,34 @@ def api_meta(ctx):
 # ---------------------------------------------------------------- 课例
 
 
+@route("GET", "/api/teacher/overview")
+def api_teacher_overview(ctx):
+    """教师待办只汇总本人的已发布任务，沿用结果页的统计口径。"""
+    user = need_role(ctx, "teacher")
+    lessons = db.query("SELECT id, title, status, updated_at FROM lessons WHERE teacher_id = ? ORDER BY updated_at DESC, id DESC",
+                       (user["id"],))
+    tasks = db.query("""SELECT t.*, l.title AS lesson_title FROM tasks t
+                        JOIN lessons l ON l.id = t.lesson_id
+                        WHERE l.teacher_id = ? AND t.status != 'draft'
+                        ORDER BY t.id DESC""", (user["id"],))
+    stats = {"lessons": len(lessons), "ongoing_tasks": 0, "pending_review": 0,
+             "revision_requested": 0, "not_submitted": 0}
+    summaries = []
+    for task in tasks:
+        result = task_results(task)
+        revision_count = sum(s["status"] == "revision_requested" for s in result["submissions"])
+        ongoing = task["status"] == "ongoing"
+        stats["ongoing_tasks"] += int(ongoing)
+        stats["pending_review"] += result["stats"]["pending_review"]
+        stats["revision_requested"] += revision_count
+        stats["not_submitted"] += len(result["stats"]["not_submitted"]) if ongoing else 0
+        summaries.append(dict(result["task"], lesson_title=task["lesson_title"],
+                              pending_review=result["stats"]["pending_review"],
+                              revision_requested=revision_count,
+                              not_submitted=result["stats"]["not_submitted"] if ongoing else []))
+    return 200, {"stats": stats, "tasks": summaries, "recent_lessons": lessons[:4]}
+
+
 @route("GET", "/api/lessons")
 def api_lessons(ctx):
     user = need_role(ctx, "teacher")
@@ -934,8 +962,9 @@ def api_review(ctx):
     items = snapshot.get("items", [])
     feedbacks = db.query("SELECT * FROM feedback WHERE submission_id = ? ORDER BY id", (row["id"],))
     history = db.query("SELECT * FROM revisions WHERE submission_id = ? ORDER BY id", (row["id"],))
-    observations = db.query("SELECT * FROM observations WHERE task_id = ? AND student_id = ? ORDER BY id DESC",
-                            (task["id"], row["student_id"]))
+    observations = db.query("""SELECT * FROM observations WHERE lesson_id = ? AND student_id = ?
+                               AND (task_id = ? OR task_id IS NULL) ORDER BY id DESC""",
+                            (task["lesson_id"], row["student_id"], task["id"]))
     data = {
         "submission": {
             "id": row["id"], "status": row["status"], "submitted_at": row["submitted_at"],
@@ -1489,6 +1518,39 @@ def api_review_set(ctx):
 
 OBS_RESULTS = ("独立完成", "需要提示", "需要帮助")
 OBS_KINDS = {"independent": "同目标独立运用检查", "oral": "口头问答观察"}
+
+
+@route("GET", r"/api/lessons/(?P<lesson_id>\d+)/observations")
+def api_lesson_observations(ctx):
+    user = need_role(ctx, "teacher")
+    lesson = load_lesson(parse_id(ctx["params"]["lesson_id"]), user["id"])
+    rows = db.query("""SELECT o.*, u.name AS student_name FROM observations o
+                       JOIN users u ON u.id = o.student_id
+                       WHERE o.lesson_id = ? ORDER BY o.id DESC""", (lesson["id"],))
+    students = db.query("SELECT id, name FROM users WHERE role = 'student' AND class_id = ? ORDER BY id",
+                        (user["class_id"],))
+    return 200, {"observations": rows, "students": students}
+
+
+@route("POST", r"/api/lessons/(?P<lesson_id>\d+)/observations")
+def api_add_lesson_observation(ctx):
+    user = need_role(ctx, "teacher")
+    lesson = load_lesson(parse_id(ctx["params"]["lesson_id"]), user["id"])
+    body = ctx["body"]
+    student = db.query_one("SELECT * FROM users WHERE id = ? AND role = 'student'",
+                           (parse_id(body.get("student_id")),))
+    if not student or student["class_id"] != user["class_id"]:
+        raise ApiError(400, "请选择本班学生", "bad_student")
+    kind = str(body.get("kind") or "independent")
+    result = str(body.get("result") or "").strip()
+    if kind not in OBS_KINDS:
+        raise ApiError(400, "观察类型不正确", "bad_kind")
+    if result not in OBS_RESULTS:
+        raise ApiError(400, "结果只能选：独立完成 / 需要提示 / 需要帮助", "bad_result")
+    db.execute("""INSERT INTO observations (lesson_id, task_id, student_id, kind, result, note, created_at)
+                  VALUES (?, NULL, ?, ?, ?, ?, ?)""",
+               (lesson["id"], student["id"], kind, result, str(body.get("note") or "").strip()[:300], now()))
+    return 200, {"ok": True, "notice": "课堂观察已保存。"}
 
 
 @route("POST", r"/api/tasks/(?P<task_id>\d+)/observations")

@@ -56,6 +56,7 @@ async function api(path, method, body) {
     err.data = data || {};
     throw err;
   }
+  if (opts.method !== 'GET' && S.user && S.user.role === 'teacher' && typeof TW !== 'undefined') TW.mutations = (TW.mutations || 0) + 1;
   return data;
 }
 
@@ -115,6 +116,7 @@ function roleLabel(role) {
 }
 
 function pageMeta() {
+  if (S.user.role === 'teacher' && typeof teacherPageMeta === 'function') return teacherPageMeta();
   var role = S.user.role;
   var segs = S.route || [];
   var first = segs[0] || '';
@@ -156,6 +158,7 @@ function icon(name) {
 }
 
 function shellNav() {
+  if (S.user.role === 'teacher' && typeof teacherNav === 'function') return teacherNav();
   var role = S.user.role;
   var first = (S.route || [])[0] || '';
   var items = [];
@@ -194,7 +197,7 @@ function shell(content) {
   var foot = role === 'teacher' ? '教师主导 · 结果可核对'
     : role === 'student' ? '老师确认后可见反馈'
       : '只读 · 仅本人孩子';
-  return '<div class="shell"><aside class="side">' +
+  return '<div class="shell shell-' + role + '"><aside class="side">' +
       '<a class="side-brand" href="#/"><span class="logo">AI4En</span><span class="sub">英语教学助手</span></a>' +
       '<nav class="side-nav" aria-label="主要导航">' + shellNav() + '</nav>' +
       '<details class="mobile-menu"><summary aria-label="展开或收起页面导航"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14"/></svg><span>菜单</span></summary><nav class="mobile-nav" aria-label="移动端页面导航">' + shellNav() + '</nav></details>' +
@@ -204,7 +207,8 @@ function shell(content) {
         '<div class="top-actions"><span class="role-chip">' + roleLabel(role) + '</span>' +
         '<span class="who-name">' + esc(S.user.name) + '</span>' +
         '<button class="btn sm ghost" data-act="logout">退出</button></div>' +
-      '</header><main class="content"><div class="container">' + content + '</div></main></div></div>';
+      '</header>' + (role === 'teacher' && typeof teacherContext === 'function' ? teacherContext() : '') +
+      '<main class="content"><div class="container">' + content + '</div></main></div></div>';
 }
 
 function modal(html) {
@@ -260,6 +264,7 @@ document.addEventListener('keydown', function (event) {
 
 /* ---------------------------------------------------------------- 视图调度 */
 async function render() {
+  if (S.user && S.user.role === 'teacher' && typeof teacherBeforeRender === 'function' && !teacherBeforeRender()) return;
   var app = document.getElementById('app');
   if (!S.user) {
     app.innerHTML = typeof loginView === 'function' ? loginView() : '<div class="container">加载中…</div>';
@@ -281,7 +286,8 @@ async function render() {
   S.query = query;
   var main = '';
   try {
-    if (segs[0] === 'lesson') main = await lessonView(parseInt(segs[1], 10), segs[2] || 'plan');
+    if (S.user.role === 'teacher' && typeof teacherWorkspaceView === 'function') main = await teacherWorkspaceView(segs);
+    else if (segs[0] === 'lesson') main = await lessonView(parseInt(segs[1], 10), segs[2] || 'plan');
     else if (segs[0] === 'review') main = await reviewView(parseInt(segs[1], 10));
     else if (segs[0] === 'student' && segs[1] === 'task') main = await studentTaskView(parseInt(segs[2], 10));
     else if (segs[0] === 'student') main = await studentView(segs[1] || '');
@@ -295,6 +301,7 @@ async function render() {
   }
   app.innerHTML = shell(main);
   if (typeof afterRender === 'function') afterRender();
+  if (S.user.role === 'teacher' && typeof teacherAfterRender === 'function') teacherAfterRender();
 }
 
 async function homeView() {
@@ -359,6 +366,7 @@ var ACTIONS = {};
 document.addEventListener('click', function (e) {
   var target = e.target.closest('[data-act]');
   if (!target) return;
+  if (target.tagName === 'SELECT') return;
   var act = target.getAttribute('data-act');
   var fn = ACTIONS[act];
   if (!fn) return;
@@ -386,6 +394,7 @@ function bindState(name) {
   if (name === 'cond') return S.cond;
   if (name === 'answers') return S.answers;
   if (name === 'review') return S.review;
+  if (name === 'logForm') return S.logForm;
   return S;
 }
 
@@ -403,6 +412,9 @@ document.addEventListener('input', function (e) {
 });
 
 document.addEventListener('change', function (e) {
+  if (e.target.matches('select[data-act]') && ACTIONS[e.target.dataset.act]) {
+    Promise.resolve(ACTIONS[e.target.dataset.act](e.target)).catch(fail);
+  }
   var node = e.target.closest('[data-bind]');
   if (node) {
     var state = bindState(node.getAttribute('data-state'));

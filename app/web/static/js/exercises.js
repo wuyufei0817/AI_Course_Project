@@ -185,7 +185,7 @@ function tasksTab(lesson) {
       (t.published_at ? '发布于 ' + esc(String(t.published_at).slice(0, 16)) : '尚未发布') + '</div></td>' +
       '<td>' + taskChip(t.status) + '</td><td>' + t.student_count + '</td><td>' + t.submitted + '</td>' +
       '<td class="actions">' + btn('预览', 'preview-task', 'data-id="' + t.id + '"', 'sm') +
-      btn('批改结果', 'goto-results', 'data-id="' + t.id + '"', 'sm') +
+      (t.status === 'draft' ? btn('编辑草稿', 'tw-edit-task', 'data-id="' + t.id + '"', 'sm') : btn('批改结果', 'goto-results', 'data-id="' + t.id + '"', 'sm')) +
       (t.status === 'ongoing' ? btn('结束', 'end-task', 'data-id="' + t.id + '"', 'sm danger') : '') +
       btn('复制', 'duplicate-task', 'data-id="' + t.id + '"', 'sm') + '</td></tr>';
   }).join('');
@@ -291,5 +291,5 @@ ACTIONS['duplicate-task'] = async function (el) {
 };
 
 ACTIONS['goto-results'] = function (el) {
-  location.hash = '#/lesson/' + S.lesson.id + '/results?task=' + el.getAttribute('data-id');
+  location.hash = '#/lesson/' + S.lesson.id + '/reviews?task=' + el.getAttribute('data-id');
 };
