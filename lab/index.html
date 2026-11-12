@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="lab">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>小学英语 AI 助教 · 全功能工作台</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/static/theme/ai4en-bridge.css" />
+  <link rel="stylesheet" href="/static/suite.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">E</div>
+        <div>
+          <div class="brand-name">英语 AI 助教</div>
+          <div class="brand-sub">English AI Co-Teacher</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <div class="nav-group">总览</div>
+        <a class="nav-item active" data-view="home">🏠 产品总览</a>
+
+        <div class="nav-group">课前 · 备课</div>
+        <a class="nav-item" data-view="m1">📝 教学设计</a>
+        <a class="nav-item" data-view="mindmap">🧠 思维导图</a>
+        <a class="nav-item" data-view="m5">📚 资源生成</a>
+
+        <div class="nav-group">课中 · 互动</div>
+        <a class="nav-item" data-view="m7">🧑‍🏫 数字人对话</a>
+        <a class="nav-item" data-view="m6">🎮 游戏闯关</a>
+
+        <div class="nav-group">课后 · 评价</div>
+        <a class="nav-item" data-view="m2">✏️ 分层练习</a>
+        <a class="nav-item" data-view="m3">💬 过程反馈</a>
+
+        <div class="nav-group">数据与生态</div>
+        <a class="nav-item" data-view="dashboard">📈 学情看板</a>
+        <a class="nav-item" data-view="tools">🧰 工具生态</a>
+      </nav>
+      <div class="side-foot">原型演示 · V1.1<br/>动态生成 · 大模型增强</div>
+    </aside>
+
+    <!-- 主区 -->
+    <div class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="pageTitle">产品总览</h1>
+          <p class="page-sub" id="pageSub">课前 · 课中 · 课后 全流程 AI 赋能</p>
+        </div>
+        <div class="top-actions">
+          <span class="pill cyan">● 演示模式</span>
+          <button class="btn ghost" id="btnExport">导出</button>
+        </div>
+      </header>
+      <main class="view" id="view"></main>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="animals.js"></script>
+  <script src="bank.js"></script>
+  <script src="mindmap.js"></script>
+  <script src="jumpgame.js"></script>
+  <script src="wordset.js"></script>
+  <script src="delivery.js"></script>
+  <script src="dh.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
