@@ -1,0 +1,69 @@
+/* Gentle interaction feedback, shared by the five app entry points. */
+:root {
+  --motion-fast: 160ms;
+  --motion-soft: 260ms;
+  --motion-ease: cubic-bezier(.2, .75, .25, 1);
+}
+html :is(.btn, .button, .tab, .side-nav a, .nav-item, .tabs a, .stage-bar nav a, .tools button) {
+  transition: translate var(--motion-fast) var(--motion-ease),
+    scale var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-fast) ease, border-color var(--motion-fast) ease,
+    background-color var(--motion-fast) ease, color var(--motion-fast) ease;
+  -webkit-tap-highlight-color: transparent;
+}
+html :is(.lesson-card, .route-card, .resource-card, .tool-mini) {
+  transition: translate var(--motion-soft) var(--motion-ease), box-shadow var(--motion-soft) ease;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html :is(.btn, .button, .tab, .tools button):not(:disabled):not([aria-disabled="true"]):hover {
+    translate: 0 -2px;
+    box-shadow: 0 6px 14px -8px rgba(31, 66, 60, .4);
+  }
+  html :is(.side-nav a, .nav-item, .tabs a, .stage-bar nav a):hover { translate: 0 -1px; }
+  html :is(.lesson-card, .route-card, .resource-card, .tool-mini):hover {
+    translate: 0 -3px;
+    box-shadow: 0 12px 26px -18px rgba(31, 66, 60, .45);
+  }
+}
+html :is(.btn, .button, .tab, .side-nav a, .nav-item, .tabs a, .stage-bar nav a, .tools button):not(:disabled):not([aria-disabled="true"]):active {
+  translate: 0 0;
+  scale: .975;
+}
+html :is(input, textarea, select) {
+  transition: border-color var(--motion-fast) ease, box-shadow var(--motion-fast) ease;
+}
+html :is(input, textarea, select):focus-visible {
+  box-shadow: 0 0 0 3px rgba(79, 135, 119, .14);
+}
+@keyframes scene-enter {
+  from { opacity: 0; translate: 0 7px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes tap-spread {
+  from { opacity: .24; transform: scale(0); }
+  to { opacity: 0; transform: scale(1); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.app .content > .container,
+  html.app .login-form,
+  html.classroom .intro,
+  html.workshop #main > .page,
+  html.workshop .slide:not([hidden]),
+  html.lab #view,
+  html.defense .slide:not([hidden]) {
+    animation: scene-enter var(--motion-soft) var(--motion-ease) both;
+  }
+  /* The view element stays mounted in the lab; animate its newly rendered children. */
+  html.lab #view > :first-child { animation: scene-enter var(--motion-soft) var(--motion-ease) both; }
+}
+.tap-feedback { position: fixed; overflow: hidden; pointer-events: none; z-index: 10000; contain: strict; }
+.tap-wave { position: absolute; border-radius: 50%; background: #9dc8b6; animation: tap-spread 400ms ease-out forwards; }
+@media (prefers-reduced-motion: reduce) {
+  html :is(.btn, .button, .tab, .side-nav a, .nav-item, .tabs a, .stage-bar nav a, .tools button,
+    .lesson-card, .route-card, .resource-card, .tool-mini, input, textarea, select) {
+    transition: none !important; translate: none !important; scale: none !important;
+  }
+  html.app .lesson-card:hover { transform: none; }
+  .tap-feedback { display: none; }
+}
+@media print { .tap-feedback { display: none !important; } }

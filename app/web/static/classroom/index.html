@@ -1,18 +1,28 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="classroom">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Animals 动物课堂 · AI4En</title>
   <link rel="stylesheet" href="classroom.css">
+  <link rel="stylesheet" href="/static/theme/palette.css">
   <script src="classroom.js" defer></script>
+<link rel="stylesheet" href="/static/theme/illustrations.css">
+<script src="/static/theme/icons.js" defer></script>
+<script src="/static/theme/illustrations.js" defer></script>
+<link rel="stylesheet" href="/static/theme/motion.css">
+<link rel="stylesheet" href="/static/theme/buttons.css">
+<script src="/static/theme/motion.js" defer></script>
+<link rel="stylesheet" href="/static/theme/ui-polish.css">
+<link rel="stylesheet" href="/static/theme/journal.css">
+<script src="/static/theme/journal.js" defer></script>
 </head>
 <body>
   <header class="bar">
     <a class="brand" href="../defense/index.html">AI4En <span>课堂答辩</span></a>
     <div class="tools">
       <a href="/">教学工作台 ↗</a>
-      <button id="fullscreen" type="button">⛶ 全屏</button>
+      <button id="fullscreen" type="button"><svg class="ico-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.4 9.2V4.4h4.8M19.6 9.2V4.4h-4.8M4.4 14.8v4.8h4.8M19.6 14.8v4.8h-4.8"/></svg> 全屏</button>
     </div>
   </header>
   <main>
@@ -23,8 +33,10 @@
         <p class="goal">What’s this? <span>→</span> It’s a …</p>
       </div>
       <div class="word-tiles" aria-label="本课词汇">
-        <span><i aria-hidden="true">🐱</i> cat</span><span><i aria-hidden="true">🐶</i> dog</span>
-        <span><i aria-hidden="true">🐼</i> panda</span><span><i aria-hidden="true">🐸</i> frog</span>
+        <span><img class="word-tile-art" src="/static/words/cat.webp" alt="" width="240" height="240" loading="lazy">cat</span>
+        <span><img class="word-tile-art" src="/static/words/dog.webp" alt="" width="240" height="240" loading="lazy">dog</span>
+        <span><img class="word-tile-art" src="/static/words/panda.webp" alt="" width="240" height="240" loading="lazy">panda</span>
+        <span><img class="word-tile-art" src="/static/words/frog.webp" alt="" width="240" height="240" loading="lazy">frog</span>
       </div>
     </section>
     <section class="stage" aria-label="课堂投屏">

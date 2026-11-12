@@ -222,15 +222,9 @@ var DLV_EMOJI = {
   hamburger: '🍔', sandwich: '🥪', salad: '🥗', 'ice cream': '🍦', juice: '🧃', tea: '🍵'
 };
 
-function dlvEmojiFor(word) {
-  if (window.WordSet && typeof window.WordSet.emojiFor === 'function') {
-    var bySet = window.WordSet.emojiFor(word);
-    if (bySet) return bySet;
-  }
-  var key = String(word || '').toLowerCase().trim();
-  if (DLV_EMOJI[key]) return DLV_EMOJI[key];
-  var hit = Object.keys(DLV_EMOJI).filter(function (k) { return key.indexOf(k) >= 0; })[0];
-  return hit ? DLV_EMOJI[hit] : '';
+function dlvEmojiFor() {
+  /* 不使用 emoji：统一绘制带首字母的水果，避免系统彩色表情破坏视觉。 */
+  return '';
 }
 
 function dlvNewState(corpus) {
@@ -795,7 +789,7 @@ function dlvSyncHud(state) {
   if (dom.level) dom.level.textContent = 'LEVEL ' + (state.levelIdx + 1) + '/' + state.total;
   if (dom.score) dom.score.textContent = 'SCORE ' + state.score;
   if (dom.time) dom.time.textContent = 'TIME ' + Math.ceil(state.time) + 's';
-  if (dom.lives) dom.lives.textContent = '❤'.repeat(Math.max(0, state.lives)) + '♡'.repeat(Math.max(0, 3 - state.lives));
+  if (dom.lives) dom.lives.textContent = '●'.repeat(Math.max(0, state.lives)) + '○'.repeat(Math.max(0, 3 - state.lives));
   if (dom.target) dom.target.textContent = 'Collect: ' + target;
   if (dom.progress) dom.progress.textContent = state.collected + '/' + state.need;
   if (dom.msg) {

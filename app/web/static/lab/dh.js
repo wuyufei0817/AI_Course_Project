@@ -338,7 +338,7 @@ window.DH = (function () {
   function renderStep() {
     const sc = SCENES[state.key];
     const st = sc.steps[state.step];
-    els.bubble.textContent = st.image ? st.image + "  " + st.dh : st.dh;
+    els.bubble.textContent = st.dh;
     els.hint.textContent = "句型支架：" + st.hint;
     els.round.textContent = state.step + 1;
     els.total.textContent = sc.steps.length;

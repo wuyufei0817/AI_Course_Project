@@ -13,46 +13,49 @@ CSS = """
 @page { size: A4; margin: 16mm 15mm; }
 * { box-sizing: border-box; }
 body { margin: 0; font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
-       color: #12303a; font-size: 10.5pt; line-height: 1.65; background: #fff; }
+       color: #1b2b28; font-size: 10.5pt; line-height: 1.65; background: #fff; }
 .wrap { max-width: 180mm; margin: 0 auto; padding: 0; }
 .brand { display: flex; justify-content: space-between; align-items: flex-end;
-         border-bottom: 2px solid #0f766e; padding-bottom: 6px; margin-bottom: 16px; }
-.brand .name { font-size: 9pt; letter-spacing: .18em; color: #0f766e; font-weight: 700; }
-.brand .meta { font-size: 8.5pt; color: #5b6b73; }
-h1 { font-size: 19pt; margin: 4px 0 6px; line-height: 1.3; }
-h2 { font-size: 12pt; margin: 18px 0 6px; color: #0f766e; }
+         border-bottom: 2px solid #2f5c51; padding-bottom: 6px; margin-bottom: 16px; }
+.brand .name { font-size: 9pt; letter-spacing: .18em; color: #2f5c51; font-weight: 700; }
+.brand .meta { font-size: 8.5pt; color: #5c6f68; }
+h1 { font-family: Georgia, "Noto Serif SC", serif; font-size: 19pt; margin: 4px 0 6px; line-height: 1.3; }
+h2 { font-family: Georgia, "Noto Serif SC", serif; font-size: 12pt; margin: 18px 0 6px; color: #2f5c51; }
 h3 { font-size: 10.5pt; margin: 12px 0 4px; }
 p { margin: 4px 0; }
-.sub { color: #5b6b73; font-size: 9.5pt; }
-.tag { display: inline-block; font-size: 8pt; border: 1px solid #cfe0dd; color: #0f766e;
-       border-radius: 3px; padding: 1px 6px; margin-right: 6px; background: #f1f7f6; }
+.sub { color: #5c6f68; font-size: 9.5pt; }
+.tag { display: inline-block; font-size: 8pt; border: 1px solid #dfe6dc; color: #2f5c51;
+       border-radius: 3px; padding: 1px 6px; margin-right: 6px; background: #f3f5ee; }
 table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; }
-th, td { border: 1px solid #d8e0e3; padding: 6px 7px; vertical-align: top; text-align: left; font-size: 9.5pt; }
+th, td { border: 1px solid #e2e7df; padding: 6px 7px; vertical-align: top; text-align: left; font-size: 9.5pt; }
 th { background: #f1f5f9; font-weight: 700; }
-td.num { width: 26px; text-align: center; color: #5b6b73; }
+td.num { width: 26px; text-align: center; color: #5c6f68; }
 .kv { margin: 3px 0; }
-.kv b { color: #0f766e; }
+.kv b { color: #2f5c51; }
 ol, ul { margin: 4px 0 4px 18px; padding: 0; }
 li { margin: 2px 0; }
-.box { border: 1px solid #d8e0e3; background: #fbfdfd; padding: 8px 10px; border-radius: 4px; margin: 6px 0; }
-.box.green { border-color: #bfe0d8; background: #f2f9f7; }
+.box { border: 1px solid #e2e7df; background: #fbfdfd; padding: 8px 10px; border-radius: 4px; margin: 6px 0; }
+.box.green { border-color: #cfe0d6; background: #f4f7f0; }
 .box.amber { border-color: #f3d9a5; background: #fffaf0; }
-.label { font-size: 8.5pt; color: #5b6b73; letter-spacing: .08em; text-transform: uppercase; }
-.blank { border-bottom: 1px solid #12303a; display: inline-block; min-width: 90px; }
-.footer { margin-top: 18px; border-top: 1px solid #d8e0e3; padding-top: 6px;
-          font-size: 8.5pt; color: #5b6b73; display: flex; justify-content: space-between; }
+.label { font-size: 8.5pt; color: #5c6f68; letter-spacing: .08em; text-transform: uppercase; }
+.blank { border-bottom: 1px solid #1b2b28; display: inline-block; min-width: 90px; }
+.footer { margin-top: 18px; border-top: 1px solid #e2e7df; padding-top: 6px;
+          font-size: 8.5pt; color: #5c6f68; display: flex; justify-content: space-between; }
 .cards { display: flex; flex-wrap: wrap; gap: 8px; }
-.card { width: 84mm; border: 1px dashed #9db8b3; border-radius: 6px; padding: 10px 12px; page-break-inside: avoid; }
+.card { width: 84mm; border: 1px dashed #8fa79c; border-radius: 6px; padding: 10px 12px; page-break-inside: avoid; }
 .card .w { font-size: 17pt; font-weight: 700; letter-spacing: .02em; }
-.card .emoji { font-size: 22pt; float: right; }
-.card .zh { color: #5b6b73; font-size: 9.5pt; }
+.card .ct { float: right; width: 22mm; height: 22mm; object-fit: contain; border-radius: 50%;
+              background: #f6f2e7; padding: 2.5mm; box-sizing: border-box; }
+.card .ct-letter { display: flex; align-items: center; justify-content: center; border-radius: 50%;
+                  background: #eef4ee; color: #2f5c51; font-family: Georgia, serif; font-size: 20pt; font-weight: 700; }
+.card .zh { color: #5c6f68; font-size: 9.5pt; }
 .card .s { font-size: 9pt; margin-top: 6px; }
 .q { margin: 10px 0; page-break-inside: avoid; }
 .q .stem { font-weight: 600; }
-.opts { margin: 4px 0 0 16px; color: #2b444c; }
+.opts { margin: 4px 0 0 16px; color: #314741; }
 .opt { display: inline-block; min-width: 44%; }
-.line { border-bottom: 1px solid #b9c7cb; height: 20px; margin-top: 6px; }
-.note { font-size: 9pt; color: #5b6b73; }
+.line { border-bottom: 1px solid #c9d3cb; height: 20px; margin-top: 6px; }
+.note { font-size: 9pt; color: #5c6f68; }
 h2, h3 { break-after: avoid; page-break-after: avoid; }
 tr, .card, .box, .q { break-inside: avoid; page-break-inside: avoid; }
 @media print { body { background: #fff; } .wrap { max-width: none; } }
@@ -188,9 +191,14 @@ def answers_page(task_id, user):
 def cards_page(lesson_id, user):
     lesson, bundle = _lesson_for_print(lesson_id, user)
     cards = bundle["materials"].get("cards", {}).get("data") or {}
+    def art(c):
+        if c.get("image"):
+            return "<img class=\"ct\" src=\"" + esc(c["image"]) + "\" alt=\"\" width=\"96\" height=\"96\">"
+        return "<div class=\"ct ct-letter\">" + esc(c.get("initial", "")) + "</div>"
+
     word_cards = "".join(
-        "<div class=\"card\"><div class=\"emoji\">" + esc(c.get("emoji", "")) + "</div>"
-        "<div class=\"w\">" + esc(c.get("word", "")) + "</div><div class=\"zh\">" + esc(c.get("zh", "")) + "</div>"
+        "<div class=\"card\">" + art(c)
+        + "<div class=\"w\">" + esc(c.get("word", "")) + "</div><div class=\"zh\">" + esc(c.get("zh", "")) + "</div>"
         "<div class=\"s\">" + esc(c.get("sentence", "")) + "</div></div>"
         for c in cards.get("word_cards") or [])
     talk = cards.get("talk_card") or {}

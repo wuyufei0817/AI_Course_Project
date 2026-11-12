@@ -1,0 +1,274 @@
+/* Shared finish: a small set of dimensions, readable type and restrained emphasis. */
+:root { --ui-card-radius: 10px; --ui-control-radius: 7px; --ui-line: #dfe3dd; --ui-focus: #386d5d; }
+html :is(.btn, .button) { min-height: 40px; border-radius: var(--ui-control-radius); padding: 9px 16px; line-height: 1.45; display: inline-flex; align-items: center; justify-content: center; gap: 7px; text-align: center; }
+html :is(.btn.sm, .btn.small) { min-height: 36px; padding: 7px 12px; }
+html :is(.btn.lg, .btn.large) { min-height: 46px; }
+html :is(.btn, .button):is(:disabled, [aria-disabled="true"]) { translate: none; scale: none; }
+html :is(.btn, .button, input, textarea, select, summary):focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 3px; }
+html.defense :is(.button, summary):focus-visible { outline-color: var(--gold); }
+html :is(.card, .route-card, .resource-card, .tool-card, .tool-mini, .panel) { border-radius: var(--ui-card-radius); }
+html.app .card { border-color: var(--ui-line); }
+html.app .page-head { margin-bottom: 24px; }
+html.app .page-head h1 { font-size: clamp(25px, 2.3vw, 30px); line-height: 1.35; }
+html.app .page-head .sub { font-family: var(--font-sans); line-height: 1.65; font-size: 14px; margin-top: 8px; letter-spacing: 0; }
+html.app .card h3, html.app .section-title { font-family: var(--font-sans); font-size: 16px; line-height: 1.55; }
+html.app .banner { border-radius: 10px; line-height: 1.75; }
+html.app .page-actions { gap: 10px; }
+html.app .side-nav a:focus-visible, .mobile-nav a:focus-visible { outline: 2px solid var(--ui-focus); outline-offset: -3px; }
+html.app .side-nav a { min-height: 42px; }
+html.app .side-nav a.active { box-shadow: none; }
+.mobile-menu { display: none; }
+
+/* Guide is secondary to the page title; artwork gets a consistent, bounded slot. */
+html.app .stu-page-guide { padding: 20px 24px; gap: 24px; background: linear-gradient(110deg, #eef4ed, #faf7ef); border-color: var(--ui-line); border-radius: var(--ui-card-radius); }
+html.app .stu-page-guide > div { min-width: 0; flex: 1; }
+html.app .stu-page-guide h2 { font: 600 20px/1.5 var(--font-sans); margin: 4px 0 14px; }
+html.app .stu-page-guide img { width: 144px; height: 104px; object-fit: contain; }
+html.app .stu-page-guide ol { list-style: none; padding: 0; display: flex; gap: 10px 20px; counter-reset: guide-step; }
+html.app .stu-page-guide li { counter-increment: guide-step; display: flex; align-items: baseline; gap: 8px; line-height: 1.65; }
+html.app .stu-page-guide li::before { content: counter(guide-step); font: 600 12px/24px var(--font-sans); width: 24px; height: 24px; flex: 0 0 24px; border-radius: 50%; text-align: center; background: #dde9df; color: #365e50; }
+
+/* Each word is one card, including its reveal area and self-check controls. */
+html.app .word-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; align-items: stretch; }
+html.app .stu-word-practice { border: 1px solid var(--ui-line); border-radius: var(--ui-card-radius); overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+html.app .stu-word-practice:focus-within { border-color: #8aaa99; }
+html.app .stu-word-practice .word-card { border: 0; border-radius: 0; background: linear-gradient(150deg, #fff, #f8faf5); margin: 0; }
+html.app .word-card summary { align-items: center; text-align: center; padding: 22px 18px 18px; min-height: 184px; gap: 8px; }
+html.app .word-thumb { width: 76px; height: 76px; padding: 10px; }
+html.app .word-en { font-size: 26px; line-height: 1.25; }
+html.app .word-hint { font-size: 13px; }
+html.app .word-body { padding: 16px 18px; }
+html.app .word-sentence { font-size: 16px; line-height: 1.65; }
+html.app .stu-word-controls { border: 0; border-top: 1px solid #edf1e9; border-radius: 0; margin-top: auto; padding: 14px 16px 16px; }
+html.app .stu-word-controls > span { display: block; text-align: center; }
+html.app .stu-word-controls .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+html.app .stu-word-controls .btn { padding-inline: 6px; min-height: 40px; font-size: 13px; }
+html.app .stu-word-controls [aria-pressed="true"] { color: #285b49; border-color: #91b19e; background: #e9f2ea; }
+html.app .stu-practice-toolbar { margin-bottom: 20px; }
+.ui-empty { display: grid; justify-items: center; gap: 12px; text-align: center; padding: 32px 24px; color: #586e63; }
+.ui-empty img { width: 124px; height: 84px; object-fit: contain; }
+.ui-empty p { max-width: 44ch; line-height: 1.8; }
+
+@media (max-width: 980px) {
+  html.app .side { position: relative; overflow: visible; justify-content: space-between; padding: 12px 18px; min-height: 64px; z-index: 60; }
+  html.app .side > .side-nav { display: none; }
+  html.app .side-brand { flex-shrink: 0; }
+  html.app .side-brand .sub { display: none; }
+  .mobile-menu { display: block; margin-left: auto; }
+  .mobile-menu summary { list-style: none; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--ui-line); border-radius: 10px; cursor: pointer; color: #2f5c51; background: #fff; font-size: 14px; }
+  .mobile-menu summary::-webkit-details-marker { display: none; }
+  .mobile-menu[open] summary { background: #e7efe6; border-color: #a5bdab; }
+  .mobile-nav { position: absolute; top: calc(100% + 6px); right: 12px; width: min(340px, calc(100vw - 24px)); max-height: min(65dvh, 520px); overflow-y: auto; padding: 12px; border: 1px solid var(--ui-line); border-radius: 14px; background: #fffefb; box-shadow: 0 14px 32px #1a382622; }
+  .mobile-nav .side-group { display: block; padding: 8px 12px 4px; margin: 0; font-size: 12px; letter-spacing: .06em; color: #708276; }
+  .mobile-nav a { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 10px 12px; border-radius: 9px; color: #38574a; text-decoration: none; font-size: 15px; }
+  .mobile-nav a.active { background: #e9f0e6; color: #234c3e; font-weight: 600; }
+  .mobile-nav a:hover { background: #f0f4ec; }
+}
+@media (max-width: 650px) {
+  html.app .page-head { gap: 12px; margin-bottom: 20px; }
+  html.app .page-head > div:first-child { min-width: 0; flex-basis: 100%; }
+  html.app .page-head .sub { font-size: 13px; }
+  html.app .page-actions { width: 100%; margin-left: 0; }
+  html.app .stu-page-guide { display: grid; grid-template-columns: minmax(0, 1fr) 80px; padding: 16px; gap: 12px; }
+  html.app .stu-page-guide h2 { font-size: 18px; }
+  html.app .stu-page-guide img { width: 80px; height: 80px; }
+  html.app .stu-page-guide ol { display: grid; gap: 8px; font-size: 13px; }
+  html.app .word-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  html.app .word-card summary { padding: 18px 10px 14px; min-height: 174px; }
+  html.app .word-thumb { width: 68px; height: 68px; }
+  html.app .stu-word-controls { padding: 12px 10px; }
+  html.app .stu-word-controls .row { grid-template-columns: 1fr; }
+  html.app .stu-practice-toolbar > .btn { width: 100%; }
+  html.app .card:has(.stu-sentences) .section-title { display: block; }
+  html.app .card:has(.stu-sentences) .section-title .tiny { display: block; margin-top: 6px; line-height: 1.7; }
+}
+@media (max-width: 359px) { html.app .word-grid { grid-template-columns: 1fr; } }
+@media print { .mobile-menu, .ui-empty img { display: none !important; } }
+
+/* Final art direction: quiet, editorial teaching tools. The same surface, type and
+   interaction rules apply to every entry point, including iframe modules. */
+:root {
+  --font-sans: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  --grad-primary: linear-gradient(#365e50, #365e50);
+  --grad-primary-hover: linear-gradient(#284c40, #284c40);
+  --grad-card: linear-gradient(#fff, #fff);
+  --grad-page: #f6f6f2;
+}
+html.app { --bg: #f6f6f2; --ink: #252e29; --muted: #626e65; --teal: #365e50; --teal-dark: #2d5547; --line: #dfe3dd; }
+html.app body, html.workshop body, html.lab body, html.classroom body { background: #f6f6f2; background-image: none; font-family: var(--font-sans); }
+html.app body, html.workshop body { font-size: 15px; line-height: 1.7; }
+html :is(button, input, textarea, select) { font-family: inherit; }
+html.app :is(.page-head h1, .top-title .t, .card h3, .section-title, .page-head .sub, .stat .num),
+html.workshop :is(.hero h1, .page-heading h1, h2, h3), html.lab :is(h1, h2, h3),
+html.classroom h1#title, html.defense :is(h1, h2, .lede) {
+  font-family: var(--font-sans); background: none; color: inherit; -webkit-text-fill-color: currentColor; letter-spacing: -.025em;
+}
+html.app .page-head h1 { font-size: 26px; font-weight: 650; }
+html.app .page-head .sub { font-size: 13px; margin-top: 6px; color: #626e65; letter-spacing: 0; }
+html.app .card h3, html.app .section-title { font-weight: 600; font-size: 15px; letter-spacing: 0; }
+html.app .stat .num { font-size: 27px; font-weight: 600; font-variant-numeric: tabular-nums; }
+html.app .side { background: #fafbf8; box-shadow: none; backdrop-filter: none; }
+html.app .side-brand .logo { background: none; color: #283f34; -webkit-text-fill-color: currentColor; }
+html.app .topbar { background: #fff; box-shadow: none; backdrop-filter: none; border-bottom: 1px solid #e5e8e1; }
+html.app .card, html.app .stat, html.workshop :is(.panel, .route-card, .resource-card, .tool-card), html.lab :is(.card, .stat, .col) {
+  background: #fff; border: 1px solid var(--ui-line); box-shadow: none;
+}
+html.app .side-nav a.active { background: #e9eee6; color: #2d4e3c; }
+html.app .lesson-card::before { width: 0; }
+html.app .lesson-card h3 { font-size: 17px; font-weight: 600; }
+html.app .section-title .dot { display: none; }
+html.app .chip { border-radius: 5px; padding: 2px 7px; font-weight: 500; }
+html.app .banner { background: #f0f3ed; border-color: #e0e6da; font-size: 13px; }
+html.app .banner.warn { background: #faf5e9; border-color: #eadfc5; }
+html.app .banner.error { background: #fcf1ee; border-color: #edd6cf; }
+html.app :is(.input, .textarea, .select), html.workshop .field :is(input, textarea, select), html.lab :is(input, textarea, select) {
+  background: #fff; border: 1px solid #cfd7ce; border-radius: 6px; font-size: 14px; line-height: 1.6;
+}
+html.app .input, html.app .select { min-height: 40px; }
+html.app .field label { font-size: 13px; font-weight: 550; color: #3e4c42; }
+html.app .field .hint { font-size: 12px; color: #6c786d; margin-top: 5px; }
+html :is(.btn, .button) { font-weight: 550; font-size: 14px; }
+html.app .btn.primary { background: #365e50; border-color: #365e50; color: #fff; box-shadow: none; }
+html.app .btn.primary:hover { background: #284c40; border-color: #284c40; }
+html.app .btn.primary::after { display: none; }
+html :is(.btn, .button, .lesson-card, .route-card, .resource-card, .tool-mini):hover { translate: none; box-shadow: none; }
+html .tap-feedback { display: none; }
+html.app .content > .container, html.workshop #main > .page, html.lab #view, html.lab #view > :first-child { animation: none; }
+html.app .login-left { background: #263f34; }
+html.app .login-left::before, html.app .login-left::after { display: none; }
+html.app .login-left .brandline { font-family: var(--font-sans); font-size: 32px; font-weight: 600; text-shadow: none; }
+html.app .login-left .lead { font-family: var(--font-sans); font-size: 14px; line-height: 1.9; }
+html.app .login-right { background: #fafbf8; background-image: none; }
+html.app .login-form h2 { font-family: var(--font-sans); font-size: 26px; }
+html.app .login-art { width: 320px; filter: none; }
+html.app .stu-head-art { width: 96px !important; height: 64px !important; }
+.page-help { border-block: 1px solid #e1e6dd; margin-bottom: 22px; color: #607064; font-size: 13px; }
+.page-help summary { cursor: pointer; padding: 12px 2px; }
+.page-help summary span { float: right; color: #748173; font-size: 12px; }
+.page-help ol { display: flex; flex-wrap: wrap; gap: 8px 32px; padding: 0 0 16px 24px; }
+.workspace-notes { margin-bottom: 24px; border-bottom: 1px solid #e1e6dd; padding-bottom: 12px; }
+.workspace-notes summary { cursor: pointer; font-size: 13px; color: #617064; padding: 6px 0; }
+.workspace-notes .grid { margin-top: 12px; }
+html.app .word-card summary { background: #fff; }
+html.app .ui-empty img { width: 96px; height: 64px; opacity: .85; }
+html.workshop .hero h1 { font-size: clamp(32px, 4vw, 48px); font-weight: 600; line-height: 1.3; }
+html.workshop .hero-stage { background: #f0f1e9; border-radius: 10px; }
+html.workshop .sample-card { transform: none; border-radius: 6px; box-shadow: 0 8px 24px #293a2610; }
+html.workshop .sample-card::before { display: none; }
+html.workshop .fruit-word { transform: none; border-radius: 6px; }
+html.workshop .stage-note { transform: none; }
+html.workshop .workshop-art { display: none; }
+html.workshop :is(.site-header, .site-footer) { background: #fafbf8; }
+html.workshop .brand-mark { transform: none; border-radius: 7px; }
+html.lab .hero { background: #edf1e9; color: #263c30; border: 1px solid #dfe5d9; box-shadow: none; }
+html.lab .hero p { color: #5a6e5f; }
+html.lab .hero .chip { color: #3d5b47; background: #fff; border: 1px solid #d8e1d3; }
+html.lab .hero::after { display: none; }
+html.lab aside.sidebar { background: #233b30; }
+html.lab .lab-art { width: 165px; }
+html.classroom .classroom-art { width: 150px; height: 100px; }
+html.classroom h1#title { font-size: clamp(30px, 4vw, 46px); font-weight: 600; line-height: 1.3; }
+html.defense :is(h1, h2) { font-weight: 600; }
+html.defense .defense-art { width: 210px; height: 140px; }
+
+/* All application dialogs use the browser top layer, with one contained sheet. */
+html.app dialog.app-dialog {
+  border: 1px solid #dce2d9; border-radius: 12px; padding: 0; width: min(600px, calc(100vw - 32px));
+  max-width: 600px; max-height: calc(100dvh - 48px); margin: auto; background: #fff; color: #252e29;
+  overflow: auto; box-shadow: 0 24px 80px #17261f30;
+}
+html.app dialog.app-dialog::backdrop { background: #192b2460; backdrop-filter: none; }
+html.app .app-dialog .modal { position: relative; padding: 28px 28px 0; width: 100%; max-width: none; border: 0; box-shadow: none; border-radius: 0; animation: none; }
+html.app .app-dialog h3 { font-family: var(--font-sans); font-size: 22px; line-height: 1.5; font-weight: 600; margin: 0 36px 6px 0; }
+html.app .app-dialog .modal-sub { font-size: 13px; line-height: 1.7; color: #69766b; margin-bottom: 24px; }
+html.app .app-dialog .form-grid { gap: 16px; }
+html.app .app-dialog .cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+html.app .app-dialog .field { min-width: 0; }
+html.app .app-dialog .field label { margin-bottom: 6px; }
+html.app .app-dialog .field :is(input, textarea) { width: 100%; }
+html.app .app-dialog .modal-foot { position: sticky; bottom: 0; z-index: 1; background: #fff; border-top: 1px solid #e8ebe4; padding: 18px 0; margin-top: 24px; display: flex; justify-content: flex-end; gap: 10px; }
+.dialog-close-btn { position: absolute; top: 23px; right: 22px; display: grid; place-items: center; width: 32px; height: 32px; background: transparent; color: #647267; border: 0; border-radius: 6px; cursor: pointer; font-size: 24px; line-height: 1; }
+.dialog-close-btn:hover { background: #f0f3ed; }
+.form-error { color: #a14e3c; background: #fbf1ee; padding: 10px 12px; border-radius: 6px; margin-top: 16px; font-size: 13px; }
+.required-mark { color: #8e6956; }
+@media (max-width: 650px) {
+  html.app .page-head h1 { font-size: 23px; }
+  .page-help summary span { float: none; margin-left: 12px; }
+  .page-help ol { display: grid; gap: 8px; }
+  html.app dialog.app-dialog { width: calc(100vw - 24px); max-height: calc(100dvh - 24px); }
+  html.app .app-dialog .modal { padding: 22px 18px 0; }
+  html.app .app-dialog .cols-2 { grid-template-columns: minmax(0, 1fr); }
+  html.app .app-dialog .modal-foot .btn { flex: 1; }
+  .dialog-close-btn { top: 18px; right: 14px; }
+  html.lab #view > .hero { padding-right: 24px; }
+}
+@media print { .app-dialog, .page-help { display: none !important; } }
+@media (max-width: 900px) {
+  html.lab .app { display: block; }
+  html.lab .sidebar { width: 100%; height: auto; position: static; padding: 14px 16px; }
+  html.lab .sidebar .brand { padding: 0 0 12px; }
+  html.lab .sidebar .nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  html.lab .sidebar .nav-group, html.lab .sidebar .side-foot { display: none; }
+  html.lab .nav-item { min-width: 0; padding: 10px 8px; font-size: 13px; }
+  html.lab .topbar { position: static; padding: 16px; flex-wrap: wrap; }
+  html.lab .topbar > :first-child { flex: 1 1 180px; }
+  html.lab .topbar .heading-art { display: none; }
+  html.lab .view { padding: 18px 16px 40px; }
+  html.lab .hero { padding: 22px !important; }
+  html.lab .hero .lab-art { position: static; margin: 16px auto 0; }
+  html.lab .stage3 { grid-template-columns: minmax(0, 1fr); }
+  html.lab .stats, html.lab .app-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html.lab .top-actions { flex-wrap: wrap; }
+}
+@media (max-width: 359px) { html.lab .sidebar .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Dense work pages: align controls, keep reading width and reveal detail on demand. */
+html.app .option-edit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 18px; }
+html.app .ex-editor .question-toolbar { border-bottom: 1px solid #edf0e8; padding-bottom: 14px; gap: 12px; }
+html.app .ex-editor .q-no { display: grid; place-items: center; width: 28px; height: 28px; flex: 0 0 28px; border-radius: 5px; color: #536a59; background: #f0f3ed; font-size: 13px; font-weight: 600; }
+html.app .ex-editor .icon-btn { width: 32px; min-height: 32px; padding: 4px; }
+html.app .ex-opt { align-items: center; padding: 5px; border: 1px solid transparent; border-radius: 6px; }
+html.app .ans-flag:has(input:focus-visible) { outline: 2px solid var(--ui-focus); outline-offset: 3px; }
+html.app .ex-more summary { padding: 6px 0; }
+html.app .review-layout { grid-template-columns: minmax(0, 1.4fr) minmax(0, .6fr); gap: 24px; }
+html.app .tbl-wrap { border: 1px solid #e5e9e0; border-radius: 8px; }
+html.app table.tbl :is(th, td) { padding: 12px 14px; line-height: 1.65; }
+html.app table.tbl th { background: #f7f8f4; font-size: 12px; white-space: nowrap; }
+html.app table.tbl tbody tr:hover td { background: #f8faf6; }
+html.app .tbl-wrap table.tbl { border-collapse: separate; border-spacing: 0; }
+html.app .tbl-wrap table.tbl tr:last-child td { border-bottom: 0; }
+html.app .flow-table :is(th, td) { padding: 8px; }
+html.app .flow-table textarea { scrollbar-width: thin; }
+html.app .save-bar { box-shadow: 0 -4px 14px #223c2a08; border-color: #cfd9cd; padding: 14px 18px; }
+html.app .plan-rail a { line-height: 1.6; padding-block: 9px; }
+html.app .plan-rail a:focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 2px; }
+html.app .prompt-card { background: #fff; border: 1px solid var(--ui-line); padding: 22px; border-radius: 10px; }
+html.app .prompt-detail { margin-block: 14px; border-top: 1px solid #edf0e8; padding-top: 12px; }
+html.app .prompt-detail summary, html.app .modal-options summary { cursor: pointer; font-size: 13px; color: #5c7060; }
+html.app .prompt-detail pre { font-family: var(--font-sans); font-size: 14px; line-height: 1.9; background: #f7f8f4; border: 1px solid #e4e9df; padding: 18px; margin-top: 12px; border-radius: 6px; }
+html.app .faq-item { background: #fff; border: 1px solid var(--ui-line); border-radius: 8px; }
+html.app .faq-item summary { padding: 18px 20px; cursor: pointer; font-size: 15px; font-weight: 550; line-height: 1.65; }
+html.app .faq-item[open] summary { border-bottom: 1px solid #edf0e8; }
+html.app .faq-item p { padding: 16px 20px 20px; color: #596b5d; font-size: 14px; line-height: 1.9; max-width: 80ch; }
+html.app .guide-tabs { gap: 4px; padding-bottom: 12px; margin-bottom: 22px; border-bottom: 1px solid #e0e6dc; }
+html.app .guide-tabs .btn { background: transparent; border-color: transparent; color: #5c6f60; }
+html.app .guide-tabs .btn.primary { background: #e7eee3; border-color: #dbe5d5; color: #2e503c; }
+html.app .modal-options { border-top: 1px solid #e6ebe2; padding-top: 14px; }
+html.app .modal-options summary span { font-weight: 400; color: #849080; margin-left: 8px; }
+html.app .modal-options .field { margin-top: 12px; }
+html.app .app-dialog input[name="duration"] { max-width: 160px; }
+@media (max-width: 900px) { html.app .review-layout { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 650px) {
+  html.app .option-edit-grid { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  html.app .question-toolbar > .row:first-child { width: 100%; gap: 8px; }
+  html.app .question-toolbar > .row:last-child { margin-left: auto; }
+  html.app .question-toolbar .input.sm { min-width: 0; flex: 1; }
+  html.app .guide-tabs { flex-wrap: nowrap; overflow-x: auto; }
+  html.app .guide-tabs .btn { white-space: nowrap; flex-shrink: 0; }
+  html.app .save-bar { padding: 14px; }
+  html.app .save-bar > .row > .row { width: 100%; display: flex; }
+  html.app .save-bar .btn { flex: 1; }
+  html.app .prompt-card { padding: 18px; }
+  html.app .app-dialog .modal-foot { padding-block: 14px; }
+  html.app .app-dialog input[name="duration"] { max-width: none; }
+}

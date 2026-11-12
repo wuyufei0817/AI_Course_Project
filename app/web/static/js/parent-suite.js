@@ -5,13 +5,13 @@
 'use strict';
 
 var PN_MODULES = [
-  { key: 'overview', icon: '📊', label: '概览', desc: '孩子任务与本周重点' },
-  { key: 'tasks', icon: '🗂', label: '任务进度', desc: '每个任务的提交与反馈' },
-  { key: 'revisions', icon: '✍️', label: '订正档案', desc: '老师确认的反馈与订正情况' },
-  { key: 'insights', icon: '📈', label: '学情分析', desc: '按老师反馈等级汇总' },
-  { key: 'weekly', icon: '🗓', label: '每周回顾', desc: '按周看变化，写下陪伴记录' },
-  { key: 'messages', icon: '💬', label: '家校留言', desc: '本地草稿，可复制发给老师' },
-  { key: 'help', icon: '📘', label: '使用说明', desc: '能看到什么、看不到什么' }
+  { key: 'overview', icon: 'compass', label: '概览', desc: '孩子任务与本周重点' },
+  { key: 'tasks', icon: 'task', label: '任务进度', desc: '每个任务的提交与反馈' },
+  { key: 'revisions', icon: 'rotate', label: '订正档案', desc: '老师确认的反馈与订正情况' },
+  { key: 'insights', icon: 'chart', label: '学情分析', desc: '按老师反馈等级汇总' },
+  { key: 'weekly', icon: 'calendar', label: '每周回顾', desc: '按周看变化，写下陪伴记录' },
+  { key: 'messages', icon: 'message', label: '家校留言', desc: '本地草稿，可复制发给老师' },
+  { key: 'help', icon: 'book', label: '使用说明', desc: '能看到什么、看不到什么' }
 ];
 
 var PN_LS_NOTES = 'ai4en-parent-weekly-notes-v1';
@@ -188,7 +188,7 @@ function pnTaskDetail(t) {
 function pnModuleLinks() {
   var cards = PN_MODULES.filter(function (m) { return m.key !== 'overview'; }).map(function (m) {
     return '<a class="card pn-link" href="#/parent/' + m.key + '">' +
-      '<div class="pn-link-ico" aria-hidden="true">' + m.icon + '</div>' +
+      '<div class="pn-link-ico" aria-hidden="true">' + icon(m.icon) + '</div>' +
       '<div><div class="pn-link-title">' + esc(m.label) + '</div>' +
       '<div class="tiny muted">' + esc(m.desc) + '</div></div></a>';
   }).join('');
@@ -482,7 +482,7 @@ function pnNav() {
   return '<div class="side-group">孩子</div>' + PN_MODULES.map(function (m) {
     var on = m.key === active ? ' active' : '';
     return '<a href="#/parent/' + m.key + '" class="' + (on ? 'active' : '') + '">' +
-      '<span class="ico">' + m.icon + '</span>' + esc(m.label) + '</a>';
+      '<span class="ico">' + icon(m.icon) + '</span>' + esc(m.label) + '</a>';
   }).join('');
 }
 
@@ -633,7 +633,7 @@ function pnTrendCard(data) {
     var x = padX + slot * i + (slot - barW) / 2;
     var y = H - padY - h;
     return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barW.toFixed(1) +
-      '" height="' + Math.max(1, h).toFixed(1) + '" rx="4" fill="#16786d" opacity=".85"></rect>' +
+      '" height="' + Math.max(1, h).toFixed(1) + '" rx="4" fill="#4f8777" opacity=".85"></rect>' +
       '<text x="' + (x + barW / 2).toFixed(1) + '" y="' + (H - padY + 12) + '" font-size="8" text-anchor="middle" fill="#7b9198">' +
       esc(k.replace(/^\d{4}\s*年\s*第\s*/, '').replace(/\s*周$/, 'w')) + '</text>';
   }).join('');

@@ -645,7 +645,7 @@ function initM5(root) {
       const box = $("#pickAnsBox", panel);
       if (!a) { box.innerHTML = '<span class="note">还没有输入回答，请先输入学生的英语回答。</span>'; return; }
       const r = evaluateAnswer(q, a);
-      box.innerHTML = `<div class="row"><b>评分</b><span style="color:#f5a623;letter-spacing:2px;font-size:16px">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</span></div>
+      box.innerHTML = `<div class="row"><b>评分</b><span style="color:#b08a54;letter-spacing:2px;font-size:16px">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</span></div>
         <div class="note" style="margin-top:6px">${r.tips.length ? "建议：" + r.tips.map(t => esc(t)).join("；") : "回答完整，很棒！"}</div>`;
     });
     let votes = [
@@ -791,7 +791,7 @@ function initM6(root) {
       panel.innerHTML = `<div class="card"><div class="card-body" style="text-align:center;padding:32px">
         <div style="font-size:44px">🧩</div>
         <h3 style="margin:8px 0">本局结束</h3>
-        <div style="font-size:22px;color:#f5a623;letter-spacing:4px">${stars}</div>
+        <div style="font-size:22px;color:#b08a54;letter-spacing:4px">${stars}</div>
         <p class="note" style="margin-top:8px">总分 ${score} 分 · 完成 ${idx + 1} 句</p>
         <button class="btn primary" id="sAgain" style="margin-top:10px">再玩一次</button>
       </div></div>`;
@@ -882,7 +882,7 @@ function initM6(root) {
       panel.innerHTML = `<div class="card"><div class="card-body" style="text-align:center;padding:32px">
         <div style="font-size:44px">${win ? "🎉" : "⏰"}</div>
         <h3 style="margin:8px 0">${win ? "全部配对成功！" : "时间到！"}</h3>
-        <div style="font-size:22px;color:#f5a623;letter-spacing:4px">${stars}</div>
+        <div style="font-size:22px;color:#b08a54;letter-spacing:4px">${stars}</div>
         <p class="note" style="margin-top:8px">本局得分 ${roundScore} 分</p>
         <button class="btn primary" id="pAgain" style="margin-top:10px">再来一局</button>
       </div></div>`;
@@ -976,8 +976,10 @@ function initM6(root) {
     }));
     const deck = [];
     data.forEach((p, i) => {
+    patch-2
       deck.push({ pair: i, face: p.en, kind: "en" });
       deck.push({ pair: i, face: p.zh, kind: "zh" });
+
     });
     const shuffled = shuffle(deck);
     let first = null, lock = false, matched = 0;
@@ -1139,9 +1141,9 @@ function renderDashboard() {
   const t = DATA.trend, w = 560, h = 160, pad = 30, min = 50, max = 100;
   const pts = t.scores.map((s, i) => [pad + i * (w - 2 * pad) / (t.scores.length - 1), h - pad - (s - min) / (max - min) * (h - 2 * pad)]);
   const poly = pts.map(p => p.join(",")).join(" ");
-  const dots = pts.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#4b5cf6"/>`).join("");
+  const dots = pts.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#4f8777"/>`).join("");
   const xlab = t.weeks.map((wk, i) => `<text x="${pts[i][0]}" y="${h - 8}" font-size="10" text-anchor="middle" fill="#8892ac">${wk}</text>`).join("");
-  const trend = `<svg viewBox="0 0 ${w} ${h}"><polyline points="${poly}" fill="none" stroke="#4b5cf6" stroke-width="2.5" stroke-linejoin="round"/>${dots}${xlab}</svg>`;
+  const trend = `<svg viewBox="0 0 ${w} ${h}"><polyline points="${poly}" fill="none" stroke="#4f8777" stroke-width="2.5" stroke-linejoin="round"/>${dots}${xlab}</svg>`;
 
   const H = DATA.heatmap;
   const hmHead = `<div class="hm-name"></div>${H.points.map(p => `<div class="hm-head">${p}</div>`).join("")}`;

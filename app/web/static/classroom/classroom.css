@@ -1,9 +1,9 @@
 :root {
   color-scheme: light;
   --ink: #14342e;
-  --paper: #f8f4e7;
-  --leaf: #17634f;
-  --line: #d8ddcd;
+  --paper: #f7f5ec;
+  --leaf: #35685a;
+  --line: #e2e5d8;
   font-family: "Trebuchet MS", "Microsoft YaHei", sans-serif;
   color: var(--ink);
   background: var(--paper);
@@ -41,4 +41,16 @@ footer { padding: .7rem 0; }
   .intro { flex-direction: column; align-items: flex-start; }
   .brand span { display: none; }
   iframe { height: 610px; }
+}
+.word-tiles .word-tile-art {
+  display: block;
+  width: clamp(36px, 5vw, 50px);
+  height: auto;
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  padding: 6px;
+  border-radius: 50%;
+  background: #f6f2e7;
+  object-fit: contain;
+  margin: 0 auto .2rem;
 }

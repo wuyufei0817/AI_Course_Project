@@ -1,0 +1,100 @@
+/* AI4En · 雾松学习手账：paper, botanical colour, and a shared sprout companion. */
+:root {
+  --journal-pine: #315c4d; --journal-sage: #dce9dc; --journal-sand: #f1e5cc;
+  --journal-border: #dce4d5; --journal-shadow: 0 2px 3px #324d2b03, 0 12px 32px -22px #35553b38;
+}
+html.app body, html.workshop body, html.lab body, html.classroom body {
+  background-color: #f6f5ec;
+  background-image: radial-gradient(ellipse at 6% 0%, #dceadaad, transparent 48%), radial-gradient(ellipse at 100% 40%, #f2dec077, transparent 48%), radial-gradient(#688b6812 .7px, transparent .9px);
+  background-size: auto, auto, 22px 22px; background-attachment: fixed;
+}
+html.app .side { background: linear-gradient(165deg, #f8fbf1ed, #e8f0e4ed); border-color: #d7e2d0; }
+html.app .side-brand .logo { font-family: Georgia, serif; letter-spacing: -.035em; }
+html.app .side-brand { position: relative; }
+html.app .side-brand::after { content: ''; display: block; width: 25px; height: 5px; margin-top: 6px; border-radius: 8px 0; background: #bd9c68; }
+html.app .topbar { background: #fffffff0; backdrop-filter: blur(14px); border-color: #dde6d6; }
+html.app .card, html.app .stat, html.workshop :is(.panel,.route-card,.resource-card,.tool-card), html.lab :is(.card,.stat,.col) {
+  border-color: var(--journal-border); border-radius: 14px; background-color: #fffefa;
+  box-shadow: var(--journal-shadow);
+  transition: border-color .22s ease, box-shadow .28s ease, translate .28s cubic-bezier(.2,.7,.2,1);
+}
+html.app .stat:nth-child(4n+1) { background: linear-gradient(135deg,#f1f7ea,#fffef8); }
+html.app .stat:nth-child(4n+2) { background: linear-gradient(135deg,#fff6e7,#fffefa); }
+html.app .stat:nth-child(4n+3) { background: linear-gradient(135deg,#edf5f2,#fffefa); }
+html.app .stat:nth-child(4n) { background: linear-gradient(135deg,#f3f0e8,#fffefa); }
+html.app .side-nav a.active { background: linear-gradient(110deg,#dce9d8,#ecf2e4); box-shadow: inset 3px 0 #568270; }
+html.app .journal-heading {
+  position: relative; display: block; padding: 27px 240px 27px 28px; min-height: 175px; border: 1px solid #d4dfca;
+  border-radius: 17px; margin-bottom: 24px; overflow: hidden; isolation: isolate;
+  background: radial-gradient(ellipse at 80% 20%, #f8f0d1b3, transparent 46%), linear-gradient(115deg,#e8f0df,#f8f6e9 62%,#e7eddb);
+  box-shadow: inset 0 1px #ffffffc9, 0 12px 28px -24px #36543970;
+}
+html.app .journal-heading[data-scene="garden"] { background: radial-gradient(ellipse at 95% 0%,#ead8b477,transparent 55%),linear-gradient(112deg,#e2eee3,#f2f6e9 65%,#e4eee3); }
+html.app .journal-heading[data-scene="library"] { background: linear-gradient(112deg,#f2ead8,#faf7ed 60%,#e7efdf); }
+html.app .journal-heading::before { content:''; position:absolute; width:220px; height:220px; border:1px dashed #a8ba9270; border-radius:50%; right:8px; top:-70px; z-index:-1; }
+html.app .journal-heading::after { content:''; position:absolute; width:65px; height:110px; border-radius:100% 0 100% 0; background:#8ba47c13; right:230px; bottom:-45px; rotate:30deg; z-index:-1; }
+html.app .journal-heading > div:first-child { min-width: 0; }
+html.app .journal-heading .page-actions { margin:16px 0 0; justify-content:flex-start; max-width:100%; width:auto; }
+html.app .journal-heading .journal-art { display:block; position:absolute; right:20px; top:12px; width:195px; height:148px; object-fit:contain; filter:drop-shadow(0 8px 12px #465c2920); transform:translate3d(var(--art-x,0px),var(--art-y,0px),0); transition:transform .5s cubic-bezier(.2,.7,.2,1); }
+html.app .journal-heading .stu-head-art { display:none; }
+html.app .journal-heading h1 { font-size:27px; letter-spacing:-.035em; color:#243d2f; }
+html.app .journal-heading .sub { max-width:70ch; color:#5d715b; }
+html.app .page-help { background:#fcfcf47a; border-radius:9px; padding-inline:12px; border:1px solid #e0e6d7; }
+html.app .word-card summary { background:linear-gradient(155deg,#fdfdf5,#edf3e7); }
+html.app .word-thumb { background:#f3e8ce; box-shadow:inset 0 0 0 1px #e7d8b6; }
+html.app .stu-word-controls { background:#fffffb; }
+html.app .stu-word-practice { box-shadow:var(--journal-shadow); border-color:#d6dfcd; }
+html.app .ui-empty { background:linear-gradient(135deg,#f4f8ee,#fdf9ee); }
+html.app .ui-empty img { width:144px; height:96px; opacity:1; }
+html :is(.btn,.button) { position:relative; overflow:hidden; transition:box-shadow .25s ease, background-color .2s ease, border-color .2s ease, translate .22s ease, scale .12s ease; }
+html.app .btn.primary, html.workshop .btn:not(.secondary):not(.white):not(.danger), html.lab .btn.primary { background:linear-gradient(130deg,#678e75,#416f59 55%,#315746); border-color:#416d54; color:white; box-shadow:inset 0 1px #ffffff30,0 6px 14px -9px #22483390; }
+html.app .btn.primary::after { display:block; content:''; position:absolute; inset:-30% -50%; background:linear-gradient(100deg,transparent 30%,#ffffff26 50%,transparent 70%); transform:translateX(-110%); pointer-events:none; transition:transform .65s ease; }
+html.app .btn.primary:is(:disabled,[aria-disabled="true"])::after { display:none; }
+html.app .tabs a { transition:color .2s ease,background-color .2s ease; border-radius:8px 8px 0 0; }
+html.app .tabs a.active { background:#edf3e6a8; }
+html.app .faq-item[open], html.app .prompt-detail[open] { border-color:#b4c7a7; }
+html.app .app-dialog { background:#fffef9; border-color:#cfdcc6; box-shadow:0 30px 90px #203e3440; }
+html.app .app-dialog .modal { background:linear-gradient(#f2f6eb 0 112px,#fffef9 112px); }
+html.app .app-dialog .modal-foot { background:#fffef9; }
+html.workshop .hero-stage { background:radial-gradient(ellipse,#f5ead2,#e5edda); box-shadow:inset 0 0 0 1px #ffffff88; }
+html.workshop .heading-art { width:170px; height:114px; }
+html.workshop .workshop-art { display:block; width:190px; height:125px; margin:16px 0 0; }
+html.lab .hero { background:linear-gradient(115deg,#e6eedb,#f5f0dd); border-color:#cfdcc3; }
+html.classroom .intro { border-bottom:1px solid #d8e3ce; margin-bottom:22px; }
+html.defense body { background:radial-gradient(ellipse at 90% 0%,#315642,#0d211d 65%); }
+html.defense .word-board { background:#1f3b30; box-shadow:0 18px 40px #00000028; }
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+  html.app .card:hover, html.workshop :is(.panel,.route-card,.resource-card):hover, html.lab .card:hover { border-color:#b6c8aa; background-image:radial-gradient(320px circle at var(--light-x,50%) var(--light-y,40%),#dce9c92e,transparent 72%); box-shadow:0 4px 10px #34502b05,0 20px 36px -26px #36563760; }
+  html.app .lesson-card:hover, html.workshop :is(.route-card,.resource-card,.tool-mini):hover, html.app .stu-word-practice:hover { translate:0 -3px; }
+  html :is(.btn,.button):not(:disabled):not([aria-disabled="true"]):hover { translate:0 -1px; box-shadow:0 7px 16px -11px #34523390; }
+  html.app .btn.primary:not(:disabled):not([aria-disabled="true"]):hover::after { transform:translateX(110%); }
+}
+@keyframes journal-arrive { from { opacity:.45; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+@keyframes journal-dialog { from { opacity:.2; transform:translateY(14px) scale(.985); } to { opacity:1; transform:translateY(0) scale(1); } }
+@media (prefers-reduced-motion:no-preference) {
+  html.app .journal-heading { animation:journal-arrive .38s cubic-bezier(.2,.7,.2,1); }
+  html.app dialog.app-dialog { animation:journal-dialog .26s cubic-bezier(.2,.7,.2,1); }
+  html.app .faq-item[open] p, html.app .prompt-detail[open] pre { animation:journal-arrive .24s ease-out; }
+}
+@media (max-width:1000px) { html.app .journal-heading { padding-right:185px; } html.app .journal-heading .journal-art { width:150px; height:120px; top:24px; } }
+@media (max-width:650px) {
+  html.app .journal-heading { min-height:unset; padding:20px; overflow:hidden; }
+  html.app .journal-heading > div:first-child { padding-right:90px; }
+  html.app .journal-heading .journal-art { width:100px; height:86px; top:14px; right:8px; }
+  html.app .journal-heading h1 { font-size:23px; }
+  html.app .journal-heading .sub { font-size:12px; }
+  html.app .journal-heading .page-actions { width:100%; margin-top:20px; }
+  html.app .journal-heading::before { width:150px; height:150px; top:-70px; right:-15px; }
+  html.workshop .heading-art { width:88px; height:72px; }
+  html.workshop .workshop-art { width:140px; height:96px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  html .journal-heading, html dialog.app-dialog, html .faq-item p, html .prompt-detail pre { animation:none!important; }
+  html .journal-art, html .stu-word-practice, html .card, html .btn, html .button { transition:none!important; transform:none!important; translate:none!important; }
+  html.app .btn.primary::after { display:none; }
+}
+@media print {
+  html.app body { background:#fff; }
+  html.app .journal-heading { background:none; border:0; box-shadow:none; padding:0; min-height:0; }
+  html.app .journal-heading .journal-art, html.app .journal-heading::before, html.app .journal-heading::after { display:none; }
+}

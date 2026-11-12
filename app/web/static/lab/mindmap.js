@@ -130,7 +130,7 @@ window.MindMap = (function () {
       parts.push(`<path d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" fill="none" stroke="#b7c4ea" stroke-width="2"/>`);
     });
     nodes.forEach(n => {
-      parts.push(`<rect x="${n.x}" y="${n.y}" width="${NODE_W}" height="${NODE_H}" rx="10" fill="#eef2ff" stroke="#4b5cf6"/>`);
+      parts.push(`<rect x="${n.x}" y="${n.y}" width="${NODE_W}" height="${NODE_H}" rx="10" fill="#edf3ee" stroke="#4f8777"/>`);
       parts.push(`<text x="${n.x + NODE_W / 2}" y="${n.y + 26}" text-anchor="middle" font-size="12" fill="#24304f" font-family="Microsoft YaHei">${esc(n.text)}</text>`);
     });
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620">${parts.join("")}</svg>`;

@@ -258,6 +258,7 @@ window.JumpGame = (function () {
   function drawFruit(ctx, f) {
     ctx.save();
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
+ patch-2
     /* 不再画单词对应的图标：看中文找英文，图标会直接泄底 */
     const palette = ["#e2725b", "#e56b7f", "#f0c76a", "#9a80c2", "#ef9b52", "#bcd06a", "#7fb9a8", "#dd8fb0"];
     let h = 0;

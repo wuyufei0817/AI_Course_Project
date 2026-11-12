@@ -284,10 +284,10 @@ const DATA = {
       { en: "park", cn: "公园" }, { en: "football", cn: "足球" }
     ],
     memory: [
-      { emoji: "🍔", en: "hamburger" }, { emoji: "🥪", en: "sandwich" },
-      { emoji: "🥗", en: "salad" }, { emoji: "🍦", en: "ice cream" },
-      { emoji: "🧃", en: "juice" }, { emoji: "🍵", en: "tea" },
-      { emoji: "⚽", en: "football" }, { emoji: "🏞️", en: "park" }
+      { cn: "汉堡", en: "hamburger" }, { cn: "三明治", en: "sandwich" },
+      { cn: "沙拉", en: "salad" }, { cn: "冰淇淋", en: "ice cream" },
+      { cn: "果汁", en: "juice" }, { cn: "茶", en: "tea" },
+      { cn: "足球", en: "football" }, { cn: "公园", en: "park" }
     ],
     whack: {
       targets: [

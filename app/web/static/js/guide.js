@@ -1,7 +1,7 @@
 /* AI4En · 使用指南、提示词、培训流程与启动 */
 'use strict';
 
-function guideView() {
+function guideView(embedded) {
   var g = META.guide || { prompts: [], steps: [], training: [], faq: [] };
   var tab = S.guideTab || 'steps';
   var tabs = [['steps', '操作卡'], ['prompts', '提示词模板'], ['training', '60 分钟培训'], ['downloads', '打印与下载'], ['faq', '常见问题']];
@@ -26,8 +26,8 @@ function guideView() {
       '<div class="stack" style="margin-top:14px">' + g.prompts.map(function (p, i) {
         return '<div class="prompt-card"><div class="row" style="justify-content:space-between">' +
           '<div><h3>' + esc(p.title) + '</h3><div class="tiny muted">' + esc(p.scene) + '</div></div>' +
-          btn('复制提示词', 'copy-prompt', 'data-i="' + i + '"', 'sm primary') + '</div>' +
-          '<pre>' + esc(p.body) + '</pre><div class="tiny muted">' + esc(p.note) + '</div></div>';
+          btn('复制提示词', 'copy-prompt', 'data-i="' + i + '"', 'sm') + '</div>' +
+          '<details class="prompt-detail"><summary>查看提示词全文</summary><pre>' + esc(p.body) + '</pre></details><div class="tiny muted">' + esc(p.note) + '</div></div>';
       }).join('') + '</div>';
   } else if (tab === 'training') {
     body = '<div class="card"><div class="section-title"><span class="dot"></span>60 分钟教师工作坊</div>' +
@@ -67,17 +67,24 @@ function guideView() {
       '<li>PDF 由打印视图生成（浏览器“另存为 PDF”或交付目录中的同名 PDF）。</li></ul></div>';
   } else {
     body = '<div class="stack">' + g.faq.map(function (item) {
-      return '<div class="card"><h3>' + esc(item[0]) + '</h3><p class="small muted" style="margin-top:6px">' + esc(item[1]) + '</p></div>';
+      return '<details class="faq-item"><summary>' + esc(item[0]) + '</summary><p>' + esc(item[1]) + '</p></details>';
     }).join('') + '</div>';
   }
 
-  return pageHead('使用指南', '操作步骤、可复制提示词、60 分钟培训流程与常见问题',
+  if (embedded && tab === 'downloads') {
+    body = (S.lesson && S.lesson.id === TW.current ? teacherResources(S.lesson) : banner('先在课例库创建或选择课例，再准备本课资源。', 'info')) +
+      '<div class="card tw-tool-section"><div class="section-title"><span class="dot"></span>培训材料</div><div class="row">' +
+      link('教师操作卡', '/print/guide/card') + link('可复制提示词', '/print/guide/prompts') + link('60 分钟培训流程', '/print/guide/training') +
+      link('20 页培训演示', '/static/workshop/index.html#slides') + '</div></div>';
+  }
+  var intro = pageHead('使用指南', '操作步骤、可复制提示词、60 分钟培训流程与常见问题',
       link('打开课例', '#/lesson/' + S.lessonId + '/plan')) +
     '<div class="card" style="margin-bottom:16px"><div class="section-title"><span class="dot"></span>AI 英语教学工作坊</div>' +
     '<p class="small muted" style="margin-bottom:12px">练习审核预设教学稿、完善提示词和制作游戏。在工作坊存入符合本课词汇的配对游戏后，可回到教师的课堂活动载入草稿。</p>' +
     '<div class="row" style="flex-wrap:wrap"><a class="btn primary" href="#/studio/workshop">进入游戏工坊</a>' +
     '<a class="btn" href="#/studio/mystery">水果线索卡</a>' +
-    '<a class="btn" target="_blank" rel="noopener" href="/static/workshop/index.html#slides">20 页培训演示 ↗</a></div></div>' +
+    '<a class="btn" target="_blank" rel="noopener" href="/static/workshop/index.html#slides">20 页培训演示 ↗</a></div></div>' ;
+  return (embedded ? '' : intro) +
     '<div class="guide-tabs">' + tabs.map(function (t) {
       return '<button class="btn ' + (tab === t[0] ? 'primary' : '') + ' sm" data-act="guide-tab" data-tab="' + t[0] + '">' + t[1] + '</button>';
     }).join('') + '</div>' + body;
@@ -101,6 +108,13 @@ ACTIONS['copy-prompt'] = async function (el) {
 };
 
 function afterRender() {
+  document.querySelectorAll('.field').forEach(function (field, i) {
+    var label = field.querySelector('label');
+    var input = field.querySelector('input:not([type="hidden"]), textarea, select');
+    if (!label || !input || label.htmlFor || label.contains(input)) return;
+    input.id = input.id || 'view-field-' + i;
+    label.htmlFor = input.id;
+  });
   window.scrollTo(0, 0);
 }
 
@@ -123,5 +137,3 @@ async function init() {
   });
   await render();
 }
-
-init();

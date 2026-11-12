@@ -1,27 +1,27 @@
 /* AI4En 统一主题桥接：工作坊与完整版共用主应用的浅绿配色与字体 */
 html.workshop {
-  --cream: #f4faf6;
-  --ink: #153027;
-  --teal: #3f8f68;
-  --orange: #9a6a1f;
-  --mint: #e6f4ec;
-  --line: #d9e8df;
-  --muted: #5f7268;
+  --cream: #f5f7f4;
+  --ink: #172a29;
+  --teal: #4f8777;
+  --orange: #a37a45;
+  --mint: #e8f1ec;
+  --line: #e2e8e2;
+  --muted: #6b807a;
   --radius: 14px;
 }
 html.lab {
-  --bg: #f4faf6;
+  --bg: #f5f7f4;
   --surface: #ffffff;
-  --ink: #153027;
-  --muted: #5f7268;
-  --line: #d9e8df;
-  --primary: #3f8f68;
-  --primary-2: #2c6b4c;
+  --ink: #172a29;
+  --muted: #6b807a;
+  --line: #e2e8e2;
+  --primary: #4f8777;
+  --primary-2: #2f5c51;
   --cyan: #4f9d78;
-  --gold: #9a6a1f;
-  --red: #a83a30;
-  --sidebar: #2c6b4c;
-  --sidebar-2: #3f8f68;
+  --gold: #a37a45;
+  --red: #a8544e;
+  --sidebar: #2f5c51;
+  --sidebar-2: #4f8777;
   --shadow: 0 1px 2px rgba(21, 48, 39, .05), 0 10px 26px -18px rgba(21, 48, 39, .35);
 }
 html.workshop body,
@@ -58,7 +58,7 @@ html.embed .topbar {
   display: none !important;
 }
 html.embed body {
-  background: var(--cream, var(--bg, #f4faf6));
+  background: var(--cream, var(--bg, #f5f7f4));
 }
 html.embed main {
   padding-top: 14px;

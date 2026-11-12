@@ -80,10 +80,10 @@ def run(reset=False):
          (lesson_id, db.dumps(exercises), "sample", now))
 
     match_pairs = [
-        {"left": "cat", "right": "猫", "emoji": "🐱"},
-        {"left": "dog", "right": "狗", "emoji": "🐶"},
-        {"left": "panda", "right": "熊猫", "emoji": "🐼"},
-        {"left": "frog", "right": "青蛙", "emoji": "🐸"},
+        {"left": "cat", "right": "猫", "image": "/static/words/cat.webp"},
+        {"left": "dog", "right": "狗", "image": "/static/words/dog.webp"},
+        {"left": "panda", "right": "熊猫", "image": "/static/words/panda.webp"},
+        {"left": "frog", "right": "青蛙", "image": "/static/words/frog.webp"},
     ]
     _add("INSERT INTO activities (lesson_id, kind, data, source, updated_at) VALUES (?, ?, ?, ?, ?)",
          (lesson_id, "match", db.dumps({

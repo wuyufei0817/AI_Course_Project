@@ -34,8 +34,11 @@ fullscreen.addEventListener("click", async () => {
     note.textContent = "当前浏览器未进入全屏。可按 F11 切换浏览器全屏。";
   }
 });
+const FS_ICON = '<svg class="ico-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"' +
+  ' stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+  '<path d="M4.4 9.2V4.4h4.8M19.6 9.2V4.4h-4.8M4.4 14.8v4.8h4.8M19.6 14.8v4.8h-4.8"/></svg>';
 document.addEventListener("fullscreenchange", () => {
-  fullscreen.textContent = document.fullscreenElement ? "退出全屏" : "⛶ 全屏";
+  fullscreen.innerHTML = FS_ICON + (document.fullscreenElement ? " 退出全屏" : " 全屏");
 });
 window.addEventListener("hashchange", showActivity);
 showActivity();

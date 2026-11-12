@@ -42,12 +42,12 @@ function exEditorCard(item, i) {
   var inner = '';
   if (type === 'choice') {
     var options = item.options || ['', '', '', ''];
-    inner = '<div class="grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">' + options.map(function (opt, j) {
+    inner = '<div class="grid option-edit-grid">' + options.map(function (opt, j) {
       var letter = String.fromCharCode(65 + j);
       return '<div class="ex-opt"><span class="opt-key">' + letter + '</span>' +
         '<input class="input" data-state="ex" data-bind="items.' + i + '.options.' + j + '" value="' + esc(opt) + '">' +
-        '<label><input type="radio" name="exans-' + i + '" data-state="ex" data-bind="items.' + i + '.answer" value="' + letter + '"' +
-        (item.answer === letter ? ' checked' : '') + '> 正确答案</label></div>';
+        '<label class="ans-flag" title="设为正确答案"><input type="radio" name="exans-' + i + '" data-state="ex" data-bind="items.' + i + '.answer" value="' + letter + '"' +
+        (item.answer === letter ? ' checked' : '') + '><span aria-hidden="true">✓</span></label></div>';
     }).join('') + '</div>';
   } else if (type === 'fill') {
     inner = '<div class="form-grid cols-2"><div class="field"><label>参考答案</label>' +
@@ -63,7 +63,7 @@ function exEditorCard(item, i) {
       '<div class="field"><label>句架（有句架支持）</label><input class="input" data-state="ex" data-bind="items.' + i + '.frame" value="' + esc(item.frame || '') + '"></div>' +
       '<div class="field"><label>关键词（给关键词支持）</label><input class="input" data-state="ex" data-bind="items.' + i + '.keywords" value="' + esc(item.keywords || '') + '"></div></div>';
   }
-  return '<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:12px">' +
+  return '<div class="card ex-editor"><div class="row question-toolbar" style="justify-content:space-between;margin-bottom:12px">' +
     '<div class="row"><span class="q-no">' + (i + 1) + '</span>' +
     '<select class="select" style="width:120px" data-act="ex-type" data-i="' + i + '">' +
     ['choice', 'fill', 'short'].map(function (t) {
@@ -71,15 +71,15 @@ function exEditorCard(item, i) {
     }).join('') + '</select>' +
     '<input class="input sm" style="width:90px" data-state="ex" data-bind="items.' + i + '.tag" value="' + esc(item.tag || '') + '" placeholder="标签">' +
     '<input class="input sm" style="width:130px" data-state="ex" data-bind="items.' + i + '.target" value="' + esc(item.target || '') + '" placeholder="目标词句"></div>' +
-    '<div class="row">' + btn('上移', 'move-ex', 'data-i="' + i + '" data-dir="-1"', 'sm ghost') +
-    btn('下移', 'move-ex', 'data-i="' + i + '" data-dir="1"', 'sm ghost') +
-    btn('删除', 'del-ex', 'data-i="' + i + '"', 'sm danger') + '</div></div>' +
-    '<div class="form-grid"><div class="field"><label>题干</label><textarea class="textarea" rows="2" data-state="ex" data-bind="items.' + i + '.stem">' + esc(item.stem || '') + '</textarea></div>' +
+    '<div class="row">' + btn('↑', 'move-ex', 'data-i="' + i + '" data-dir="-1" title="上移"', 'sm ghost icon-btn') +
+    btn('↓', 'move-ex', 'data-i="' + i + '" data-dir="1" title="下移"', 'sm ghost icon-btn') +
+    btn('×', 'del-ex', 'data-i="' + i + '" title="删除"', 'sm ghost icon-btn danger-text') + '</div></div>' +
+    '<div class="form-grid"><div class="field"><label>题干</label><textarea class="textarea" rows="1" data-state="ex" data-bind="items.' + i + '.stem">' + esc(item.stem || '') + '</textarea></div>' +
     inner +
-    '<div class="form-grid cols-2" style="margin-top:10px">' +
+    '<details class="ex-more"><summary>提示与解析</summary><div class="form-grid cols-2">' +
     '<div class="field"><label>提示（学生点“提示”时显示）</label><input class="input" data-state="ex" data-bind="items.' + i + '.hint" value="' + esc(item.hint || '') + '"></div>' +
     '<div class="field"><label>解析（教师答案页）</label><input class="input" data-state="ex" data-bind="items.' + i + '.analysis" value="' + esc(item.analysis || '') + '"></div>' +
-    '</div></div></div>';
+    '</div></details></div></div>';
 }
 
 ACTIONS['ex-type'] = function (el) {
@@ -185,7 +185,7 @@ function tasksTab(lesson) {
       (t.published_at ? '发布于 ' + esc(String(t.published_at).slice(0, 16)) : '尚未发布') + '</div></td>' +
       '<td>' + taskChip(t.status) + '</td><td>' + t.student_count + '</td><td>' + t.submitted + '</td>' +
       '<td class="actions">' + btn('预览', 'preview-task', 'data-id="' + t.id + '"', 'sm') +
-      btn('批改结果', 'goto-results', 'data-id="' + t.id + '"', 'sm') +
+      (t.status === 'draft' ? btn('编辑草稿', 'tw-edit-task', 'data-id="' + t.id + '"', 'sm') : btn('批改结果', 'goto-results', 'data-id="' + t.id + '"', 'sm')) +
       (t.status === 'ongoing' ? btn('结束', 'end-task', 'data-id="' + t.id + '"', 'sm danger') : '') +
       btn('复制', 'duplicate-task', 'data-id="' + t.id + '"', 'sm') + '</td></tr>';
   }).join('');
@@ -291,5 +291,5 @@ ACTIONS['duplicate-task'] = async function (el) {
 };
 
 ACTIONS['goto-results'] = function (el) {
-  location.hash = '#/lesson/' + S.lesson.id + '/results?task=' + el.getAttribute('data-id');
+  location.hash = '#/lesson/' + S.lesson.id + '/reviews?task=' + el.getAttribute('data-id');
 };

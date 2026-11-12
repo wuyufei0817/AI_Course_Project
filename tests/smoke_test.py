@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import http.cookiejar
 from copy import copy
+from datetime import datetime, timedelta
 import json
 import os
 import shutil
@@ -26,6 +27,8 @@ APP = os.path.join(ROOT, "app")
 PORT = int(os.environ.get("AI4EN_TEST_PORT", "8850"))
 EXTERNAL = os.environ.get("AI4EN_BASE", "").rstrip("/")
 BASE = EXTERNAL or ("http://127.0.0.1:" + str(PORT))
+# 截止时间必须晚于运行时刻，否则提交会被正确拦截，导致用例假失败
+DUE_AT = (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d %H:%M")
 RESULTS = []
 
 
@@ -185,7 +188,7 @@ def main():
         # 9 新建任务并发布
         status, data, _ = teacher.post("/api/lessons/1/tasks", {
             "class_id": 1, "title": "验收任务 · Animals 短练习", "instructions": "按题目要求作答。",
-            "due_at": "2026-11-10 20:00", "allow_hints": True, "show_result": "immediately"})
+            "due_at": DUE_AT, "allow_hints": True, "show_result": "immediately"})
         task_id = data.get("task", {}).get("id")
         record("创建任务草稿", "HTTP 200 且状态为草稿", status == 200 and data["task"]["status"] == "draft",
                "HTTP " + str(status) + " 任务 " + str(task_id))
@@ -253,7 +256,20 @@ def main():
         has_answer = json.dumps(data, ensure_ascii=False).find("answer") >= 0
         record("家长视图不含答案字段", "返回内容不含 answer", not has_answer, "含答案" if has_answer else "未含答案")
 
-        # 16 统计正确
+        # 16 学生端学习档案
+        status, data, _ = student.get("/api/student/overview")
+        stats_own = data.get("stats", {})
+        record("学生端学习档案", "HTTP 200 且只统计本人",
+               status == 200 and stats_own.get("assigned", 0) >= 1 and stats_own.get("submitted", 0) >= 1,
+               "HTTP " + str(status) + " / 提交 " + str(stats_own.get("submitted")))
+        leaked_any = any(("answer" in w) or ("analysis" in w) for w in data.get("wrong", []))
+        record("错题本不含标准答案", "错题只含题干与本人作答", not leaked_any, "泄露" if leaked_any else "未泄露")
+        status, data, _ = teacher.get("/api/student/overview")
+        record("教师不能读学生档案", "HTTP 403", status == 403, "HTTP " + str(status))
+        status, data, _ = parent.get("/api/student/overview")
+        record("家长不能读学生档案", "HTTP 403", status == 403, "HTTP " + str(status))
+
+        # 17 统计正确
         status, data, _ = teacher.get("/api/tasks/1/results")
         stats = data.get("stats", {})
         record("统计口径", "布置 6 人、已提交 4 人、待复核 2 条",

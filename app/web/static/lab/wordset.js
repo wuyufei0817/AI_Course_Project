@@ -87,6 +87,7 @@
     return {
       sentences: sentences,
       pairs: words.map(function (w) { return { en: w.en, cn: w.zh }; }),
+patch-2
       memory: words.map(function (w) { return { en: w.en, zh: w.zh }; }),
       whack: {
         targets: words.map(function (w) { return { cn: w.zh, en: w.en }; }),

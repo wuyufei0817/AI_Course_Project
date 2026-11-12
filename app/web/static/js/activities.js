@@ -104,7 +104,7 @@ function drawGame() {
     var left = pairs.map(function (p, i) {
       var cls = 'match-item' + (GAME.matched[i] ? ' done' : '') + (GAME.sel === i ? ' sel' : '') + (GAME.wrong === i ? ' wrong' : '');
       return '<button class="' + cls + '" data-act="game-left" data-i="' + i + '">' +
-        esc(p.emoji ? p.emoji + '  ' : '') + esc(p.left) + '</button>';
+        (p.image ? '<img class="match-art" src="' + esc(p.image) + '" alt="" width="240" height="240" loading="lazy">' : '') + esc(p.left) + '</button>';
     }).join('');
     var right = (GAME.rightOrder || []).map(function (i) {
       var p = pairs[i] || {};

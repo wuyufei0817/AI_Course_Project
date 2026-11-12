@@ -1,0 +1,67 @@
+/* Shared picture-book accents: local assets, reserved dimensions, no overlays on controls. */
+.stu-page-guide { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 20px 24px; margin-bottom: 24px; border: 1px solid #e2e8df; border-radius: 14px; background: linear-gradient(115deg, #edf4ed, #faf6ed); }
+.stu-page-guide h2 { font-size: 20px; margin: 6px 0 12px; line-height: 1.5; }
+.stu-page-guide ol { display: flex; flex-wrap: wrap; gap: 8px 28px; padding-left: 20px; color: #466258; font-size: 14px; }
+.stu-page-guide img { width: 160px; height: 108px; object-fit: contain; flex-shrink: 0; }
+.stu-practice-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.stu-practice-toolbar p { margin-top: 6px; }
+.stu-word-practice { min-width: 0; }
+.stu-word-controls { padding: 12px; border: 1px solid #e2e8df; border-top: 0; border-radius: 0 0 12px 12px; background: white; }
+.stu-word-controls .row { margin-top: 8px; }
+.stu-word-controls [aria-pressed="true"] { background: #e4efe5; border-color: #7ca58d; }
+@media (max-width: 650px) { .stu-page-guide { gap: 12px; padding: 16px; } .stu-page-guide img { width: 88px; height: 76px; } .stu-page-guide ol { display: grid; gap: 8px; } .stu-page-guide h2 { font-size: 18px; } }
+@media print { .stu-page-guide img, .stu-word-controls { display: none; } }
+.scene-art { display: block; object-fit: contain; height: auto; max-width: 100%; pointer-events: none; user-select: none; }
+.heading-art { width: 146px; height: 98px; flex: 0 0 146px; order: 1; }
+html.app .page-head { align-items: center; }
+html.app .page-head > :first-child { flex: 1; min-width: 0; }
+html.app .page-head > .row { order: 2; flex-wrap: wrap; justify-content: flex-end; max-width: 46%; }
+html.app .login-left { gap: 20px; }
+html.app .login-art { width: min(100%, 440px); height: auto; max-height: 34vh; align-self: center; position: relative; z-index: 1; filter: drop-shadow(0 16px 24px #102e2926); }
+html.classroom .intro { flex-wrap: wrap; }
+html.classroom .intro > :first-child { flex: 1; }
+html.classroom .classroom-art { width: 220px; height: 148px; order: 1; }
+html.classroom .word-tiles { order: 2; }
+html.workshop .page-heading { align-items: center; }
+html.workshop .page-heading > :first-child { flex: 1; }
+html.workshop .workshop-art { width: 188px; height: 126px; margin: 22px auto 0; filter: drop-shadow(0 8px 16px #172a2914); }
+html.lab .topbar > .heading-art { margin-left: auto; width: 108px; height: 72px; flex-basis: 108px; order: 0; }
+html.lab .topbar > .top-actions { order: 1; }
+html.lab #view > .hero { position: relative; padding-right: 230px; min-height: 200px; }
+html.lab .lab-art { position: absolute; width: 210px; height: 150px; right: 16px; bottom: 10px; }
+html.defense .cover-art { display: grid; justify-items: center; gap: 12px; }
+html.defense .defense-art { width: 290px; height: 190px; }
+html.defense .cover-art .word-board { width: 100%; }
+@media (max-width: 1050px) {
+  .heading-art { width: 106px; height: 72px; flex-basis: 106px; }
+  html.classroom .classroom-art { width: 158px; height: 106px; }
+  html.classroom .word-tiles { gap: 6px; }
+  html.workshop .workshop-art { width: 144px; height: 96px; }
+}
+@media (max-width: 650px) {
+  html.app .side-brand { flex-shrink: 0; }
+  html.app .side-brand .sub { display: none; }
+  html.app .side-nav { min-width: 0; overflow-x: auto; }
+  html.app .stack, html.app .card, html.app .tbl-wrap { min-width: 0; }
+  html.app .obj-item .input { min-width: 0; }
+  html.app .form-grid.cols-3 { grid-template-columns: minmax(0, 1fr); }
+  html.app .flow-table { min-width: 680px; }
+  html.app .page-head, html.workshop .page-heading { flex-wrap: wrap; gap: 12px; }
+  .heading-art { width: 82px; height: 56px; flex-basis: 82px; }
+  html.app .page-head > .row { max-width: 100%; width: 100%; justify-content: flex-start; }
+  html.classroom .intro { flex-direction: row; align-items: center; gap: 12px; }
+  html.classroom .intro > :first-child { flex-basis: calc(100% - 100px); }
+  html.classroom .classroom-art { width: 88px; height: 70px; }
+  html.classroom .word-tiles { width: 100%; }
+  html.classroom h1#title { font-size: 2.7rem; }
+  html.workshop .workshop-art { width: 134px; height: 90px; }
+  html.lab .topbar > .heading-art { display: none; }
+  html.lab #view > .hero { padding-right: 24px; }
+  html.lab .lab-art { position: static; width: 180px; height: 120px; margin: 12px auto 0; }
+  html.defense .defense-art { width: 200px; height: 130px; }
+}
+@media (max-height: 760px) and (min-width: 651px) {
+  html.app .login-art { max-height: 24vh; }
+  html.defense .defense-art { height: 120px; width: 200px; }
+}
+@media print { .scene-art { display: none !important; } }

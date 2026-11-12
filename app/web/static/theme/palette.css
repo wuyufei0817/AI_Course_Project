@@ -1,0 +1,848 @@
+/* ==========================================================================
+   AI4En · 主题层「雾松 / 暖砂」
+   统一主应用、课堂版、答辩页、完整版与工作坊的配色、渐变、阴影与圆角。
+   规则按页面根类名分组（html.app / .classroom / .defense / .lab / .workshop），
+   避免跨页面污染；只改颜色与质感，不改布局。
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- 共享渐变
+   只放渐变与阴影变量，颜色令牌仍按页面分组，避免污染。 */
+
+:root {
+  --grad-primary: linear-gradient(135deg, #5f9887 0%, #447a6b 52%, #2f5c51 100%);
+  --grad-primary-hover: linear-gradient(135deg, #6aa392 0%, #4b8473 52%, #35645a 100%);
+  --grad-hero: linear-gradient(150deg, #14352f 0%, #235044 44%, #3f7a68 76%, #5e9584 100%);
+  --grad-card: linear-gradient(160deg, #ffffff 0%, #fdfefb 55%, #f6faf5 100%);
+  --grad-page:
+    radial-gradient(1080px 620px at 2% -12%, rgba(214, 232, 221, .9) 0%, rgba(214, 232, 221, 0) 56%),
+    radial-gradient(900px 540px at 104% -8%, rgba(246, 231, 209, .62) 0%, rgba(246, 231, 209, 0) 50%),
+    linear-gradient(116deg, #eef4ee 0%, #f8f8f2 48%, #f4efe6 100%);
+}
+
+/* ---------------------------------------------------------------- 主应用 */
+
+html.app {
+  color-scheme: light;
+
+  --ink: #1b2b28;
+  --ink-2: #3a4f49;
+  --muted: #5c6f68;
+
+  --bg: #f5f6f1;
+  --card: #ffffff;
+  --line: #e2e7df;
+  --line-soft: #eef1ea;
+
+  --teal: #3f7a6a;
+  --teal-dark: #2f5c51;
+  --teal-deep: #1f423b;
+  --teal-soft: #eef2ea;
+  --sage: #8aa99a;
+
+  --amber: #8a5f2c;
+  --amber-soft: #f7efe2;
+  --gold: #b99a6b;
+
+  --danger: #a8544e;
+  --danger-soft: #fbf1ef;
+
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(27, 43, 40, .04);
+}
+
+html.app body {
+  background: var(--grad-page);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+html.app ::selection { background: #cfe3d7; color: #14302b; }
+
+html.app * { scrollbar-width: thin; scrollbar-color: #c3d4c9 transparent; }
+html.app *::-webkit-scrollbar { width: 10px; height: 10px; }
+html.app *::-webkit-scrollbar-thumb { background: #cfdcd3; border-radius: 99px; border: 3px solid transparent; background-clip: content-box; }
+html.app *::-webkit-scrollbar-thumb:hover { background: #b6c9bd; background-clip: content-box; }
+
+html.app a { color: var(--teal-dark); }
+
+/* 卡片：极淡的冷暖过渡，比纯白更有纸感；统计数字用等宽数字对齐 */
+html.app .card,
+html.app .stat,
+html.app .lesson-card { background: var(--grad-card); }
+
+html.app .stat .num,
+html.app .card .num,
+html.app table td,
+html.app table th { font-variant-numeric: tabular-nums; }
+
+/* 外壳 */
+html.app .side {
+  background: #fbfbf8;
+  border-right: 1px solid #e6eae2;
+  box-shadow: none;
+}
+
+html.app .side-brand .logo {
+  color: var(--ink);
+  letter-spacing: .01em;
+}
+
+html.app .side-nav a { color: #47594f; }
+html.app .side-nav a:hover { background: #eef1ea; color: #1b2b28; }
+html.app .side-nav a.active {
+  background: #e8ede4;
+  color: #1b2b28;
+  box-shadow: none;
+}
+
+html.app .topbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e8ece4;
+  box-shadow: none;
+}
+
+html.app .role-chip,
+html.app .chip.teal {
+  background: #eef2ea;
+  color: var(--teal-dark);
+}
+html.app .chip.gray { background: #eef2ee; }
+
+/* 卡片与按钮 */
+html.app .card {
+  border-radius: 12px;
+  background: #ffffff;
+  border-color: #e4e8e0;
+  box-shadow: none;
+}
+
+html.app .lesson-card::before { background: #3f7a6a; width: 3px; }
+html.app .lesson-card.draft::before { background: #b99a6b; }
+
+html.app .section-title .dot {
+  background: #3f7a6a;
+  box-shadow: none;
+}
+
+html.app .btn.ghost { background: transparent; color: var(--teal-dark); }
+
+/* 表单与标签 */
+html.app .input, html.app .textarea, html.app .select {
+  border-color: #dfe7e0;
+  background: #fff;
+  box-shadow: inset 0 1px 0 rgba(23, 42, 41, .02);
+}
+html.app .input:hover, html.app .textarea:hover, html.app .select:hover { border-color: #cfdcd3; }
+html.app .input:focus, html.app .textarea:focus, html.app .select:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 4px rgba(79, 135, 119, .13);
+}
+
+html.app .tabs { border-bottom-color: rgba(216, 227, 218, .9); }
+html.app .tabs a { border-radius: 10px 10px 0 0; }
+html.app .tabs a:hover { background: #f3f5f0; }
+html.app .tabs a.active { color: var(--ink); }
+
+html.app table.tbl th { background: #f7f8f3; }
+html.app table.tbl td { border-bottom-color: #edf0e9; }
+html.app table.tbl tr:hover td { background: #fafbf6; }
+
+html.app .stat { background: #ffffff; border-color: #e4e8e0; }
+html.app .stat.teal .num { color: #2f5c51; }
+
+html.app .badge-src { border-color: #d3e3da; background: #f4faf6; }
+html.app .banner.info { background: #eef3ec; border-color: #dbe5d9; color: #2f4f45; }
+html.app .banner.ok { background: #eef6f0; border-color: #d3e5d8; color: #1f6146; }
+html.app .banner.warn { background: #f9f3e7; border-color: #e9dcc4; color: #7c5418; }
+html.app .banner.error { background: #fbf0ee; border-color: #eed3cf; color: var(--danger); }
+
+/* 登录 */
+html.app .login-left {
+  background: var(--grad-hero);
+  isolation: isolate;
+}
+html.app .login-left::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(620px 420px at 14% 4%, rgba(255, 255, 255, .12), transparent 62%),
+    linear-gradient(180deg, rgba(255, 255, 255, .05), transparent 46%);
+  z-index: -1;
+}
+html.app .login-left::after {
+  width: 0; height: 0; display: none;
+}
+html.app .login-left .brandline { letter-spacing: .01em; text-shadow: none; }
+html.app .login-left .lead { color: rgba(233, 244, 239, .92); }
+html.app .login-left .foot { color: rgba(209, 228, 219, .8); }
+html.app .login-points .p { color: rgba(226, 240, 234, .9); }
+html.app .flow-chips span {
+  background: rgba(255, 255, 255, .08);
+  border-color: rgba(255, 255, 255, .2);
+  backdrop-filter: none;
+}
+html.app .login-right { background: #ffffff; }
+html.app .demo-row { border-radius: 8px; transition: background .15s ease; }
+html.app .demo-row:hover { background: #f3f5f0; }
+
+/* ---------------------------------------------------------------- 课堂版 */
+
+html.classroom {
+  --ink: #14342e;
+  --paper: #f7f5ec;
+  --leaf: #35685a;
+  --line: #dde3d6;
+}
+
+html.classroom body {
+  background:
+    radial-gradient(900px 520px at 88% -6%, #e8efe0 0%, rgba(232, 239, 224, 0) 58%),
+    radial-gradient(760px 460px at 4% 104%, #f6eddd 0%, rgba(246, 237, 221, 0) 58%),
+    linear-gradient(180deg, #f8f6ee 0%, #f4f4ea 100%);
+  background-attachment: fixed;
+}
+
+html.classroom .bar {
+  background: linear-gradient(120deg, #173a33 0%, #245046 55%, #35685a 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+  box-shadow: 0 14px 34px -30px rgba(0, 0, 0, .9);
+}
+
+html.classroom .brand span { color: rgba(206, 226, 216, .82); }
+
+html.classroom .tools button {
+  border-color: rgba(255, 255, 255, .28);
+  transition: background .16s ease, border-color .16s ease;
+}
+html.classroom .tools button:hover { background: rgba(255, 255, 255, .12); border-color: rgba(255, 255, 255, .45); }
+
+html.classroom .eyebrow { color: var(--leaf); }
+html.classroom .goal span { color: #b07a4b; }
+
+html.classroom .word-tiles span {
+  background: linear-gradient(158deg, #ffffff, #fbf8ee);
+  border-color: #e4e3d4;
+  box-shadow: 0 1px 2px rgba(20, 52, 46, .04), 0 12px 24px -22px rgba(20, 52, 46, .6);
+}
+
+html.classroom .stage {
+  border-color: #e3e5d8;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(20, 52, 46, .04), 0 30px 60px -48px rgba(20, 52, 46, .65);
+  background: #fff;
+}
+
+html.classroom nav a { background: #eef2e8; color: #3c554b; }
+html.classroom nav a[aria-current] {
+  background: linear-gradient(135deg, #4f8777 0%, #35685a 100%);
+  color: #fff;
+  box-shadow: 0 10px 20px -16px rgba(31, 66, 60, .9);
+}
+
+html.classroom #activity-note, html.classroom footer { color: #4c655c; }
+
+/* ---------------------------------------------------------------- 答辩页 */
+
+html.defense {
+  --ink: #f8f4e9;
+  --muted: #bcc9c6;
+  --night: #0f2422;
+  --panel: #17332e;
+  --line: #35524b;
+  --gold: #d9b483;
+  --mint: #a9d8c3;
+}
+
+html.defense body {
+  background:
+    radial-gradient(900px 540px at 84% -12%, rgba(217, 180, 131, .13), transparent 62%),
+    radial-gradient(780px 480px at 6% 108%, rgba(105, 155, 136, .14), transparent 60%),
+    linear-gradient(160deg, #0e2220 0%, #0b1a19 55%, #0d211e 100%);
+}
+
+html.defense .masthead {
+  border-bottom-color: rgba(217, 180, 131, .18);
+  backdrop-filter: blur(10px);
+}
+html.defense .brand span { color: var(--gold); }
+html.defense .kicker { color: var(--gold); letter-spacing: .24em; }
+
+html.defense .button.accent {
+  background: linear-gradient(135deg, #e6c99b 0%, #cfa970 100%);
+  color: #2a2014;
+  box-shadow: 0 16px 30px -22px rgba(217, 180, 131, .9), inset 0 1px 0 rgba(255, 255, 255, .5);
+}
+html.defense .button.accent:hover { filter: brightness(1.04); }
+html.defense .button:not(.accent) { border: 1px solid rgba(217, 180, 131, .32); }
+html.defense .button:not(.accent):hover { background: rgba(217, 180, 131, .1); }
+
+html.defense .word-board {
+  background: linear-gradient(160deg, #17332e, #122824);
+  border-color: rgba(217, 180, 131, .16);
+  box-shadow: 10px 10px 0 rgba(5, 16, 15, .55), inset 0 1px 0 rgba(255, 255, 255, .05);
+}
+html.defense .word-board div { background: linear-gradient(150deg, #f7efdf, #f1e5d0); }
+html.defense .word-board div:nth-child(2), html.defense .word-board div:nth-child(3) {
+  background: linear-gradient(150deg, #c8e9d7, #b3ddc9);
+}
+
+/* ---------------------------------------------------------------- 完整版（lab） */
+
+html.lab {
+  --bg: #f5f7f4;
+  --surface: #ffffff;
+  --ink: #172a29;
+  --muted: #6b807a;
+  --line: #e4eae5;
+  --primary: #4f8777;
+  --primary-2: #2f5c51;
+  --cyan: #7fa694;
+  --green: #4f8777;
+  --gold: #b08a54;
+  --red: #a8544e;
+  --sidebar: #1b3b35;
+  --sidebar-2: #2b564c;
+}
+
+html.lab body {
+  background:
+    radial-gradient(1000px 560px at 100% -10%, #eef3ea 0%, rgba(238, 243, 234, 0) 58%),
+    linear-gradient(180deg, #f6f8f4 0%, #f2f5f0 100%);
+  background-attachment: fixed;
+}
+
+html.lab .hero {
+  background: var(--grad-hero);
+  box-shadow: 0 2px 4px rgba(23, 42, 41, .05), 0 30px 60px -42px rgba(23, 42, 41, .75);
+}
+html.lab .hero::after { background: radial-gradient(circle, rgba(255, 255, 255, .22), transparent 66%); }
+html.lab .hero p { color: rgba(233, 244, 239, .86); }
+
+html.lab .nav-item.active {
+  background: linear-gradient(135deg, rgba(95, 152, 135, .34), rgba(75, 132, 115, .22));
+  border-color: rgba(131, 168, 151, .42);
+  color: #fff;
+}
+html.lab .nav-group { color: rgba(168, 196, 184, .62); }
+html.lab .pill.cyan { color: #2f5c51; background: #eaf3ee; border-color: #cfe2d7; }
+html.lab .tab.active { color: var(--teal-dark); border-bottom-color: var(--teal); }
+html.lab .dh-scene.active { background: #eaf3ee; border-color: var(--primary); color: var(--teal-dark); }
+html.lab .slot-chip { background: var(--grad-primary); }
+html.lab .kw,
+html.lab .dh-badge { background: #eaf2ec; color: var(--teal-dark); }
+html.lab .bar-fill,
+html.lab .bar-fill2 { background: var(--grad-primary); }
+html.lab .matrix td.hot { background: #edf4ef; color: var(--teal-dark); }
+html.lab .game-wrap { background: linear-gradient(180deg, #fbfdfa, #f4f8f3); }
+html.lab .sidebar { background: linear-gradient(180deg, #1b3b35 0%, #244a41 60%, #2b564c 100%); }
+
+/* ---------------------------------------------------------------- 工作坊 */
+
+html.workshop {
+  --cream: #f7f6f1;
+  --ink: #172a29;
+  --teal: #4f8777;
+  --orange: #b08a54;
+  --mint: #e7f0ea;
+  --line: #e2e8e2;
+  --muted: #6b807a;
+}
+
+html.workshop body {
+  background:
+    radial-gradient(860px 480px at 100% -8%, #f2f4e8 0%, rgba(242, 244, 232, 0) 58%),
+    linear-gradient(180deg, #f8f7f3 0%, #f4f5ef 60%, #f1f4ec 100%);
+}
+
+html.workshop .site-header {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(252, 253, 250, .84));
+  border-bottom-color: rgba(220, 228, 218, .9);
+  backdrop-filter: blur(12px);
+}
+
+html.workshop .site-header nav a.active { color: var(--teal); }
+html.workshop .brand-mark { background: var(--grad-primary); }
+
+/* ---------------------------------------------------------------- 降低动效 */
+@media (prefers-reduced-motion: reduce) {
+  html.app .lesson-card:hover { transform: none; }
+  html.app .btn { transition: none; }
+}
+
+
+/* ==========================================================================
+   字体层：正文无衬线 / 标题衬线 / 强调楷体 / 课堂行楷
+   目标是在不牺牲可读性的前提下，让标题、数字与英文短句更有层次。
+   ========================================================================== */
+
+:root {
+  --font-sans: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
+  --font-serif: Georgia, "Noto Serif SC", "华文中宋", "Source Han Serif SC", "Songti SC", SimSun, serif;
+  --font-kai: Georgia, "KaiTi", "楷体", "华文楷体", "Kaiti SC", "Noto Serif SC", serif;
+  --font-brush: "STXingkai", "华文行楷", "KaiTi", "楷体", "Kaiti SC", "Songti SC", serif;
+  --font-latin: Georgia, "Times New Roman", "Noto Serif SC", serif;
+}
+
+html.app body { font-family: var(--font-sans); }
+
+/* 主应用：标题衬线、数字衬线、说明楷体 */
+html.app .side-brand .logo {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: .035em;
+}
+
+html.app .top-title .t {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  letter-spacing: .02em;
+}
+
+html.app .page-head h1 {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+html.app .page-head .sub {
+  font-family: var(--font-kai);
+  font-size: 14px;
+  letter-spacing: .01em;
+}
+
+html.app .card h3,
+html.app .lesson-card h3 {
+  font-family: var(--font-serif);
+  letter-spacing: .015em;
+}
+
+html.app .section-title {
+  font-family: var(--font-serif);
+  font-size: 14.5px;
+  letter-spacing: .02em;
+}
+
+html.app .stat .num {
+  font-family: var(--font-latin);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+html.app .lesson-card .meta .hl,
+html.app .badge-src,
+html.app .chip { letter-spacing: .01em; }
+
+html.app .login-left .brandline {
+  font-family: var(--font-serif);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  line-height: 1.28;
+}
+
+html.app .login-left .lead {
+  font-family: var(--font-kai);
+  font-size: 14.8px;
+  line-height: 1.85;
+  letter-spacing: .01em;
+  max-width: 520px;
+}
+
+html.app .login-form h2 {
+  font-family: var(--font-serif);
+  font-size: 27px;
+  letter-spacing: .02em;
+}
+
+html.app .login-left .foot,
+html.app .side-brand .sub { letter-spacing: .05em; }
+
+/* 课堂版：行楷主标题 + 楷体目标句 */
+html.classroom h1#title {
+  font-family: var(--font-brush);
+  font-weight: 400;
+  font-size: clamp(2.9rem, 6vw, 4.15rem);
+  line-height: 1.12;
+  letter-spacing: .015em;
+  background: linear-gradient(120deg, #16342c 0%, #2f5c51 52%, #6a8f5e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+html.classroom .eyebrow {
+  font-family: var(--font-latin);
+  font-size: .78rem;
+  letter-spacing: .26em;
+}
+
+html.classroom .goal {
+  font-family: var(--font-serif);
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+  letter-spacing: .01em;
+}
+
+html.classroom .word-tiles span { font-family: var(--font-serif); }
+html.classroom .word-tiles i { font-family: var(--font-latin); }
+html.classroom .brand { font-family: var(--font-serif); letter-spacing: .02em; }
+
+/* 答辩页：大标题衬线，英文小标签字距拉开 */
+html.defense h1,
+html.defense h2 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: .012em;
+}
+
+html.defense h1 { font-size: clamp(32px, 4.5vw, 66px); line-height: 1.26; }
+html.defense h2 { font-size: clamp(26px, 3.4vw, 46px); line-height: 1.3; }
+
+html.defense .kicker {
+  font-family: var(--font-latin);
+  font-size: 12.5px;
+  letter-spacing: .28em;
+}
+
+html.defense .lede { font-family: var(--font-serif); font-weight: 400; max-width: 56ch; }
+html.defense .brand { letter-spacing: -.02em; }
+
+/* 工作坊：主标题衬线，页脚署名衬线 */
+html.workshop .hero h1 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: .015em;
+  line-height: 1.34;
+}
+
+html.workshop .brand-name,
+html.workshop .site-footer .brand-name { font-family: var(--font-serif); letter-spacing: .02em; }
+
+/* 完整版：标题衬线 */
+html.lab .brand-name,
+html.lab .topbar h1,
+html.lab .hero h2 {
+  font-family: var(--font-serif);
+  letter-spacing: .015em;
+}
+
+html.lab .hero h2 { font-weight: 700; }
+
+
+
+/* ==========================================================================
+   正式版收口：平面、发丝边、单一强调色
+   依据 app-screens：卡片不投影，颜色只给数据与状态，导航与外壳保持中性。
+   ========================================================================== */
+
+html.app .card,
+html.app .stat,
+html.app .lesson-card { box-shadow: none; }
+
+html.app .lesson-card:hover { transform: none; box-shadow: none; }
+
+html.app .stat { padding: 18px 20px; }
+
+html.app .chip {
+  border: 1px solid #e3e8df;
+  background: #ffffff;
+}
+html.app .chip.teal { background: #eef2ea; border-color: #dde6da; }
+html.app .badge-src { background: #ffffff; border-color: #e3e8df; }
+
+html.app .demo-row { border: 1px solid transparent; }
+html.app .demo-row:hover { border-color: #e6ebe2; }
+
+/* 工作坊：米色平面 + 发丝边 */
+html.workshop body { font-size: 16px; }
+html.workshop header.site-header { background: #f7f6ef; border-bottom: 1px solid #e6e4d8; }
+html.workshop .brand-mark { background: #2f5c51; color: #fff; box-shadow: none; }
+html.workshop .hero-stage { background: #eef1e6; }
+html.workshop .sample-card,
+html.workshop .fruit-word { box-shadow: none; border: 1px solid #e4e4d6; }
+html.workshop .card { box-shadow: none; }
+
+/* 完整版：深绿平面 + 中性导航 */
+html.lab body { font-size: 15px; }
+html.lab aside.sidebar { background: #17332e; }
+html.lab .logo { background: #2f5c51; box-shadow: none; }
+html.lab a.nav-item.active { background: rgba(255, 255, 255, .08); color: #fff; }
+html.lab .hero { background: #1c3f38; box-shadow: none; }
+html.lab .stat,
+html.lab .col,
+html.lab .card { box-shadow: none; }
+
+/* 课堂版：页头实色，舞台不投影 */
+html.classroom header.bar { background: #173a33; }
+html.classroom section.stage,
+html.classroom a#games { box-shadow: none; }
+
+/* 答辩页：封面实色，展板去掉投影 */
+html.defense { background: #0d211d; }
+html.defense .word-board { box-shadow: none; border-color: rgba(217, 180, 131, .18); }
+
+
+
+/* 可读性下限：正文与标签不小于 13px */
+html.app .tiny,
+html.app .chip,
+html.app table.tbl th,
+html.app .side-group,
+html.app .side-foot,
+html.app .role-chip,
+html.app .top-title p,
+html.app .stat .extra,
+html.app .idx,
+html.app .lesson-card .meta { font-size: 13px; }
+
+html.app .side-group { letter-spacing: .06em; }
+html.app .chip { padding: 3px 9px; }
+html.app :is(.input, .textarea, .select) { box-shadow: none; }
+
+html.app .flow-chips span { font-size: 13px; }
+html.app .demo-title,
+html.app .demo-title span { font-size: 13px; }
+html.app .login-left .foot { font-size: 13px; }
+html.app .login-left .brandline { font-size: clamp(30px, 3vw, 42px); letter-spacing: .01em; }
+
+/* 完整版：小标签抬到 13px */
+html.lab .nav-group,
+html.lab .m,
+html.lab .stat-lbl,
+html.lab .brand-sub,
+html.lab .page-sub,
+html.lab .card-sub,
+html.lab .chip,
+html.lab .side-foot,
+html.lab .nav-item { font-size: 13px; }
+
+/* 工作坊：小标签抬到 13px */
+html.workshop .prompt-chip,
+html.workshop .sample-label,
+html.workshop .lesson-badge,
+html.workshop .sample-card small,
+html.workshop #bag-count,
+html.workshop .page-sub { font-size: 13px; }
+
+
+
+/* 工作坊：舞台改成有边框的画布，小标签抬到 13px */
+html.workshop .hero-stage {
+  background: #eef1e6;
+  border: 1px solid #e5e5d6;
+  border-radius: 14px;
+}
+html.workshop .sample-label,
+html.workshop #bag-count,
+html.workshop small,
+html.workshop .sample-card small { font-size: 13px; }
+
+
+html.lab .col-sub,
+html.lab .pill { font-size: 13px; }
+
+
+/* ==========================================================================
+   结构与排版：页头两行、教案锚点、练习卡瘦身、间距节奏
+   ========================================================================== */
+
+html.app .page-head { display: block; margin-bottom: 20px; }
+html.app .page-head h1 { margin-bottom: 6px; }
+html.app .page-actions { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+html.app .stack { gap: 20px; }
+html.app .card { padding: 20px 22px; }
+html.app .form-grid { gap: 14px 16px; }
+html.app .section-title { margin-bottom: 8px; }
+html.app .grid { align-items: stretch; }
+html.app .grid > .card { height: 100%; }
+
+/* 教案：左侧锚点 + 右侧内容 */
+html.app .plan-layout {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: 26px;
+  align-items: start;
+}
+html.app .plan-rail {
+  position: sticky;
+  top: 86px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 2px 0;
+}
+html.app .plan-rail a {
+  display: block;
+  padding: 7px 10px;
+  border-left: 2px solid transparent;
+  border-radius: 0 6px 6px 0;
+  font-size: 13.5px;
+  color: var(--muted);
+  text-decoration: none;
+}
+html.app .plan-rail a:hover { background: #f1f3ec; color: var(--ink); }
+html.app .plan-rail a.active { background: #f1f4ec; border-left-color: #2f5c51; color: var(--ink); }
+
+html.app .save-bar { position: sticky; bottom: 16px; z-index: 5; }
+
+/* 练习卡：单选勾、折叠、图标按钮 */
+html.app .ex-opt { grid-template-columns: 18px minmax(0, 1fr) 22px; }
+html.app .ans-flag {
+  width: 22px; height: 22px; border: 1px solid #cfd9cf; border-radius: 50%;
+  display: grid; place-items: center; color: transparent; font-size: 12px;
+}
+html.app .ans-flag input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+html.app .ans-flag:has(input:checked) { background: #2f5c51; border-color: #2f5c51; color: #fff; }
+html.app .ex-opt:has(input[type=radio]:checked) { background: #f5f8f3; border: 1px solid #d9e4d9; }
+html.app .ex-more { margin-top: 10px; border-top: 1px solid #eef1ea; padding-top: 8px; }
+html.app .ex-more summary { cursor: pointer; font-size: 13px; color: var(--muted); list-style: none; }
+html.app .ex-more summary::-webkit-details-marker { display: none; }
+html.app .ex-more summary::before { content: "＋"; margin-right: 6px; color: #7d8f86; }
+html.app .ex-more[open] summary::before { content: "－"; }
+html.app .ex-more .form-grid { margin-top: 10px; }
+html.app .icon-btn { width: 28px; padding: 0; justify-content: center; }
+html.app .danger-text { color: #a8544e; }
+
+html.app textarea.textarea { field-sizing: content; min-height: 44px; max-height: 260px; }
+
+@media (max-width: 980px) {
+  html.app .plan-rail { display: none; }
+  html.app .plan-layout { grid-template-columns: 1fr; gap: 0; }
+  html.app .save-bar { position: static; }
+  html.app .page-actions .btn { flex: 0 0 auto; }
+}
+
+@media (max-width: 760px) {
+  html.app .tbl-wrap table.tbl { min-width: 640px; }
+  html.app .page-actions { gap: 6px; }
+  html.app .page-actions .btn { height: 34px; }
+}
+
+
+
+/* 表格：去表头底色，只留下边线 */
+html.app table.tbl th {
+  background: transparent;
+  border-bottom: 1px solid #dfe5dc;
+  color: #5c6f68;
+  font-weight: 600;
+}
+html.app table.tbl td { border-bottom: 1px solid #eef1ea; }
+
+/* 保存条：浮起时与内容分开 */
+html.app .save-bar {
+  box-shadow: 0 1px 0 #e8ece4, 0 12px 30px -26px rgba(27, 43, 40, .55);
+}
+
+
+
+/* 页头回到单行：标题左、动作右；窄屏动作独占一行 */
+html.app .page-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 20px;
+}
+html.app .page-head > div:first-child { flex: 1 1 420px; min-width: 280px; }
+html.app .page-actions {
+  margin-top: 0;
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  html.app .page-actions { width: 100%; margin-left: 0; }
+}
+
+/* 教学流程：手机上表格转卡片 */
+@media (max-width: 760px) {
+  html.app table.flow-table { min-width: 0; display: block; }
+  html.app table.flow-table thead { display: none; }
+  html.app table.flow-table tbody { display: block; }
+  html.app table.flow-table tr {
+    display: block;
+    border: 1px solid #e4e8e0;
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    background: #fbfcf9;
+  }
+  html.app table.flow-table td {
+    display: block;
+    border: 0;
+    padding: 4px 0;
+  }
+  html.app table.flow-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 12px;
+    color: #6b7d75;
+    margin-bottom: 2px;
+  }
+  html.app table.flow-table td.actions::before { display: none; }
+  html.app table.flow-table td.actions { text-align: right; }
+}
+
+
+
+/* 教学流程：桌面自适应但限高，手机上固定高度可滚动 */
+html.app .flow-table textarea.textarea {
+  field-sizing: content;
+  max-height: 140px;
+}
+@media (max-width: 760px) {
+  html.app .flow-table textarea.textarea {
+    field-sizing: fixed;
+    height: 72px;
+    max-height: 72px;
+  }
+}
+
+
+
+/* 教学流程卡片：环节/时间并排，其余整行 */
+@media (max-width: 760px) {
+  html.app table.flow-table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 88px;
+    gap: 6px 10px;
+  }
+  html.app table.flow-table td { padding: 0; }
+  html.app table.flow-table td:nth-child(1) { grid-column: 1; }
+  html.app table.flow-table td:nth-child(2) { grid-column: 2; }
+  html.app table.flow-table td:nth-child(3),
+  html.app table.flow-table td:nth-child(4),
+  html.app table.flow-table td:nth-child(5),
+  html.app table.flow-table td.actions { grid-column: 1 / -1; }
+  html.app table.flow-table textarea.textarea { height: 56px; max-height: 56px; }
+  html.app table.flow-table td.actions { padding-top: 4px; }
+}
+
+
+
+@media (max-width: 760px) {
+  html.app table.flow-table tr { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  html.app table.flow-table td:nth-child(2) { grid-column: 2; }
+  html.app table.flow-table td:nth-child(3) { grid-column: 1; }
+  html.app table.flow-table td:nth-child(4) { grid-column: 2; }
+  html.app table.flow-table td:nth-child(5),
+  html.app table.flow-table td.actions { grid-column: 1 / -1; }
+
+  html.app .form-grid.cols-3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  html.app .form-grid.cols-3 .field:nth-child(3),
+  html.app .form-grid.cols-3 .field:nth-child(4),
+  html.app .form-grid.cols-3 .field:nth-child(5),
+  html.app .form-grid.cols-3 .field:nth-child(6) { grid-column: 1 / -1; }
+}
+

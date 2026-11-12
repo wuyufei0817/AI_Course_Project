@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from . import auth, content, db, guide
 
@@ -334,6 +334,34 @@ def api_meta(ctx):
 
 
 # ---------------------------------------------------------------- 课例
+
+
+@route("GET", "/api/teacher/overview")
+def api_teacher_overview(ctx):
+    """教师待办只汇总本人的已发布任务，沿用结果页的统计口径。"""
+    user = need_role(ctx, "teacher")
+    lessons = db.query("SELECT id, title, status, updated_at FROM lessons WHERE teacher_id = ? ORDER BY updated_at DESC, id DESC",
+                       (user["id"],))
+    tasks = db.query("""SELECT t.*, l.title AS lesson_title FROM tasks t
+                        JOIN lessons l ON l.id = t.lesson_id
+                        WHERE l.teacher_id = ? AND t.status != 'draft'
+                        ORDER BY t.id DESC""", (user["id"],))
+    stats = {"lessons": len(lessons), "ongoing_tasks": 0, "pending_review": 0,
+             "revision_requested": 0, "not_submitted": 0}
+    summaries = []
+    for task in tasks:
+        result = task_results(task)
+        revision_count = sum(s["status"] == "revision_requested" for s in result["submissions"])
+        ongoing = task["status"] == "ongoing"
+        stats["ongoing_tasks"] += int(ongoing)
+        stats["pending_review"] += result["stats"]["pending_review"]
+        stats["revision_requested"] += revision_count
+        stats["not_submitted"] += len(result["stats"]["not_submitted"]) if ongoing else 0
+        summaries.append(dict(result["task"], lesson_title=task["lesson_title"],
+                              pending_review=result["stats"]["pending_review"],
+                              revision_requested=revision_count,
+                              not_submitted=result["stats"]["not_submitted"] if ongoing else []))
+    return 200, {"stats": stats, "tasks": summaries, "recent_lessons": lessons[:4]}
 
 
 @route("GET", "/api/lessons")
@@ -934,8 +962,9 @@ def api_review(ctx):
     items = snapshot.get("items", [])
     feedbacks = db.query("SELECT * FROM feedback WHERE submission_id = ? ORDER BY id", (row["id"],))
     history = db.query("SELECT * FROM revisions WHERE submission_id = ? ORDER BY id", (row["id"],))
-    observations = db.query("SELECT * FROM observations WHERE task_id = ? AND student_id = ? ORDER BY id DESC",
-                            (task["id"], row["student_id"]))
+    observations = db.query("""SELECT * FROM observations WHERE lesson_id = ? AND student_id = ?
+                               AND (task_id = ? OR task_id IS NULL) ORDER BY id DESC""",
+                            (task["lesson_id"], row["student_id"], task["id"]))
     data = {
         "submission": {
             "id": row["id"], "status": row["status"], "submitted_at": row["submitted_at"],
@@ -1167,6 +1196,206 @@ def api_revise(ctx):
     return 200, {"ok": True, "notice": "订正已提交，首次作答仍然保留。"}
 
 
+# ---------------------------------------------------------------- 学生端：学习概览
+
+@route("GET", "/api/student/overview")
+def api_student_overview(ctx):
+    """学生本人的学习档案：任务进度、错题、订正与时间线。
+
+    只返回本人数据，且不包含正确答案与解析（与学生任务接口一致）。
+    """
+    user = need_role(ctx, "student")
+    tasks = db.query(
+        """SELECT t.*, l.title AS lesson_title, l.vocab AS lesson_vocab, l.sentences AS lesson_sentences
+           FROM tasks t JOIN lessons l ON l.id = t.lesson_id
+           WHERE t.class_id = ? AND t.status != 'draft' ORDER BY t.id DESC""",
+        (user["class_id"],))
+    subs = {}
+    for row in db.query("SELECT * FROM submissions WHERE student_id = ?", (user["id"],)):
+        subs[row["task_id"]] = row
+
+    wrong, feedbacks, revisions_out, timeline = [], [], [], []
+    tags = {}
+    weeks = {}
+    correct_total = graded_total = 0
+    pending_revision = revised = 0
+    next_task = None
+
+    for task in tasks:
+        sub = subs.get(task["id"])
+        snapshot = db.loads(task["snapshot"])
+        items = snapshot.get("items", [])
+        if not sub:
+            if task["status"] == "ongoing" and next_task is None:
+                next_task = {"id": task["id"], "title": task["title"], "due_at": task["due_at"],
+                             "item_count": len(items), "reason": "还没提交"}
+            continue
+        if sub["status"] == "revision_requested":
+            pending_revision += 1
+            if next_task is None:
+                next_task = {"id": task["id"], "title": task["title"], "due_at": task["due_at"],
+                             "item_count": len(items), "reason": "老师要求订正"}
+        if sub["status"] == "resubmitted":
+            revised += 1
+
+        answers = db.loads(sub["answers"], {})
+        grading = db.loads(sub["grading"], {})
+        try:
+            day = datetime.strptime(str(sub["submitted_at"])[:10], "%Y-%m-%d").date()
+        except ValueError:
+            day = None
+        if day:
+            monday = day - timedelta(days=day.weekday())
+            bucket = weeks.setdefault(monday, {"start": monday, "submitted": 0, "total": 0, "correct": 0})
+            bucket["submitted"] += 1
+        fbs = {f["item_id"]: f for f in db.query(
+            "SELECT * FROM feedback WHERE submission_id = ?", (sub["id"],))}
+        rev_rows = db.query("SELECT * FROM revisions WHERE submission_id = ? ORDER BY id", (sub["id"],))
+        first_answers = db.loads(rev_rows[0]["answers"], {}) if rev_rows else {}
+
+        for item in items:
+            ans = answers.get(item["id"], "")
+            ok = grading.get(item["id"])
+            tag = item.get("tag") or "未分类"
+            if item["type"] != "short":
+                if ok is None:
+                    continue
+                graded_total += 1
+                correct_total += 1 if ok else 0
+                if day:
+                    weeks[monday]["total"] += 1
+                    weeks[monday]["correct"] += 1 if ok else 0
+                bucket = tags.setdefault(tag, {"tag": tag, "correct": 0, "total": 0})
+                bucket["total"] += 1
+                bucket["correct"] += 1 if ok else 0
+                if ok is False:
+                    wrong.append({
+                        "task_id": task["id"], "task_title": task["title"], "item_id": item["id"],
+                        "type": item["type"], "stem": item.get("stem", ""), "tag": tag,
+                        "target": item.get("target", ""), "my_answer": ans,
+                        "feedback": "", "level": "",
+                    })
+            else:
+                fb = fbs.get(item["id"])
+                if not fb or fb["status"] != "confirmed":
+                    continue
+                feedbacks.append({
+                    "task_id": task["id"], "task_title": task["title"], "item_id": item["id"],
+                    "stem": item.get("stem", ""), "final": fb["final"], "level": fb["level"],
+                    "at": fb["confirmed_at"] or sub["updated_at"],
+                })
+                if fb["level"] in ("需局部修改", "需教师帮助"):
+                    original = first_answers.get(item["id"], ans) if first_answers else ans
+                    wrong.append({
+                        "task_id": task["id"], "task_title": task["title"], "item_id": item["id"],
+                        "type": "short", "stem": item.get("stem", ""), "tag": tag,
+                        "target": item.get("target", ""), "my_answer": original,
+                        "revised": ans if str(ans or "") != str(original or "") else "",
+                        "feedback": fb["final"], "level": fb["level"],
+                    })
+
+        timeline.append({"at": sub["submitted_at"], "kind": "submit",
+                         "title": "提交作业", "detail": task["title"]})
+        if sub["status"] == "resubmitted":
+            timeline.append({"at": sub["updated_at"], "kind": "revise",
+                             "title": "提交订正", "detail": task["title"]})
+
+        if rev_rows:
+            first = db.loads(rev_rows[0]["answers"], {})
+            changes = []
+            for item in items:
+                before = str(first.get(item["id"], "") or "")
+                after = str(answers.get(item["id"], "") or "")
+                if before != after:
+                    changes.append({
+                        "item_id": item["id"], "stem": item.get("stem", ""),
+                        "before": before, "after": after,
+                    })
+            revisions_out.append({
+                "task_id": task["id"], "task_title": task["title"], "submission_id": sub["id"],
+                "at": rev_rows[-1]["created_at"], "changes": changes,
+            })
+
+    for fb in feedbacks:
+        timeline.append({"at": fb["at"], "kind": "feedback",
+                         "title": "老师确认了反馈", "detail": fb["task_title"]})
+    timeline.sort(key=lambda e: e["at"] or "", reverse=True)
+
+    for task in tasks:
+        if task["status"] == "ended" and task["id"] not in subs and next_task is None:
+            next_task = {"id": task["id"], "title": task["title"], "due_at": task["due_at"],
+                         "item_count": len(db.loads(task["snapshot"]).get("items", [])), "reason": "已结束"}
+            break
+
+    assigned = len(tasks)
+    submitted = len(subs)
+
+    # 词卡：按本班课例的目标词去重，供学生端「单词卡」使用；不含答案与解析。
+    vocab_words, seen_words = [], set()
+    for task in tasks:
+        for word in db.loads(task.get("lesson_vocab"), []) or []:
+            key = str(word).strip().lower()
+            if key and key not in seen_words:
+                seen_words.add(key)
+                vocab_words.append(str(word).strip())
+    vocab_cards = content.build_cards({"vocab": vocab_words})["word_cards"] if vocab_words else []
+
+    # 句型：同一课例的目标句型，供单词卡页做跟读提示。
+    sentence_list, seen_sentences = [], set()
+    for task in tasks:
+        for sentence in db.loads(task.get("lesson_sentences"), []) or []:
+            key = str(sentence).strip()
+            if key and key not in seen_sentences:
+                seen_sentences.add(key)
+                sentence_list.append(key)
+
+    # 最近 4 周：每周提交数与客观题正确率，供「学习报告」画趋势。
+    week_rows = []
+    for start in sorted(weeks)[-4:]:
+        item = weeks[start]
+        week_rows.append({
+            "start": start.isoformat(),
+            "label": start.strftime("%m/%d"),
+            "submitted": item["submitted"],
+            "correct": item["correct"],
+            "total": item["total"],
+            "accuracy": round(item["correct"] / item["total"] * 100, 0) if item["total"] else None,
+        })
+
+    cls = db.query_one("SELECT name FROM classes WHERE id = ?", (user.get("class_id"),)) if user.get("class_id") else None
+
+    return 200, {
+        "student": {"name": user["name"], "class_name": cls["name"] if cls else ""},
+        "stats": {
+            "assigned": assigned,
+            "submitted": submitted,
+            "not_submitted": assigned - submitted,
+            "pending_revision": pending_revision,
+            "revised": revised,
+            "wrong": len(wrong),
+            "objective_correct": correct_total,
+            "objective_total": graded_total,
+            "accuracy": round(correct_total / graded_total * 100, 0) if graded_total else None,
+        },
+        "tags": sorted(tags.values(), key=lambda t: (-t["total"], t["tag"])),
+        "vocab": vocab_cards,
+        "sentences": sentence_list,
+        "weeks": week_rows,
+        "wrong": wrong,
+        "feedback": sorted(feedbacks, key=lambda f: f["at"] or "", reverse=True)[:8],
+        "revisions": sorted(revisions_out, key=lambda r: r["at"] or "", reverse=True),
+        "timeline": timeline[:12],
+        "next_task": next_task,
+        "tasks": [{
+            "id": t["id"], "title": t["title"], "lesson_title": t["lesson_title"],
+            "due_at": t["due_at"], "status": t["status"],
+            "item_count": len(db.loads(t["snapshot"]).get("items", [])),
+            "submission": {"id": subs[t["id"]]["id"], "status": subs[t["id"]]["status"],
+                           "submitted_at": subs[t["id"]]["submitted_at"]} if t["id"] in subs else None,
+        } for t in tasks],
+    }
+
+
 # ---------------------------------------------------------------- 家长端
 
 
@@ -1289,6 +1518,39 @@ def api_review_set(ctx):
 
 OBS_RESULTS = ("独立完成", "需要提示", "需要帮助")
 OBS_KINDS = {"independent": "同目标独立运用检查", "oral": "口头问答观察"}
+
+
+@route("GET", r"/api/lessons/(?P<lesson_id>\d+)/observations")
+def api_lesson_observations(ctx):
+    user = need_role(ctx, "teacher")
+    lesson = load_lesson(parse_id(ctx["params"]["lesson_id"]), user["id"])
+    rows = db.query("""SELECT o.*, u.name AS student_name FROM observations o
+                       JOIN users u ON u.id = o.student_id
+                       WHERE o.lesson_id = ? ORDER BY o.id DESC""", (lesson["id"],))
+    students = db.query("SELECT id, name FROM users WHERE role = 'student' AND class_id = ? ORDER BY id",
+                        (user["class_id"],))
+    return 200, {"observations": rows, "students": students}
+
+
+@route("POST", r"/api/lessons/(?P<lesson_id>\d+)/observations")
+def api_add_lesson_observation(ctx):
+    user = need_role(ctx, "teacher")
+    lesson = load_lesson(parse_id(ctx["params"]["lesson_id"]), user["id"])
+    body = ctx["body"]
+    student = db.query_one("SELECT * FROM users WHERE id = ? AND role = 'student'",
+                           (parse_id(body.get("student_id")),))
+    if not student or student["class_id"] != user["class_id"]:
+        raise ApiError(400, "请选择本班学生", "bad_student")
+    kind = str(body.get("kind") or "independent")
+    result = str(body.get("result") or "").strip()
+    if kind not in OBS_KINDS:
+        raise ApiError(400, "观察类型不正确", "bad_kind")
+    if result not in OBS_RESULTS:
+        raise ApiError(400, "结果只能选：独立完成 / 需要提示 / 需要帮助", "bad_result")
+    db.execute("""INSERT INTO observations (lesson_id, task_id, student_id, kind, result, note, created_at)
+                  VALUES (?, NULL, ?, ?, ?, ?, ?)""",
+               (lesson["id"], student["id"], kind, result, str(body.get("note") or "").strip()[:300], now()))
+    return 200, {"ok": True, "notice": "课堂观察已保存。"}
 
 
 @route("POST", r"/api/tasks/(?P<task_id>\d+)/observations")

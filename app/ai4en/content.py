@@ -324,16 +324,21 @@ def _exercises_animals(lesson):
 
 def build_cards(lesson):
     vocab = lesson.get("vocab") or ["cat", "dog", "panda", "frog"]
+    # 词卡用本地插画裁切图，不使用 emoji；没有配图的词退化为首字母卡。
     meta = {
-        "cat": ("🐱", "猫", "It's a cat. It is white."),
-        "dog": ("🐶", "狗", "It's a dog. It is brown."),
-        "panda": ("🐼", "熊猫", "It's a panda. It is black and white."),
-        "frog": ("🐸", "青蛙", "It's a frog. It is green."),
+        "cat": ("猫", "It's a cat. It is white."),
+        "dog": ("狗", "It's a dog. It is brown."),
+        "panda": ("熊猫", "It's a panda. It is black and white."),
+        "frog": ("青蛙", "It's a frog. It is green."),
     }
     words = []
     for w in vocab:
-        emoji, zh, sent = meta.get(w, ("🃏", "", f"It's a {w}."))
-        words.append({"word": w, "emoji": emoji, "zh": zh, "sentence": sent})
+        zh, sent = meta.get(w, ("", f"It's a {w}."))
+        words.append({
+            "word": w, "zh": zh, "sentence": sent,
+            "image": "/static/words/" + w + ".webp" if w in meta else "",
+            "initial": w[:1].upper(),
+        })
     return {
         "word_cards": words,
         "talk_card": {
