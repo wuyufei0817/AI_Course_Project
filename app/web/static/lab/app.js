@@ -716,7 +716,7 @@ function renderM6() {
       <div class="tab" data-tab="memory">🃏 记忆翻牌</div>
       <div class="tab" data-tab="whack">🔨 打地鼠</div>
       <div class="tab" data-tab="jump">🏝 跳跳岛</div>
-      <div class="tab" data-tab="delivery">🛵 水果快递员</div>
+      <div class="tab" data-tab="delivery">🛵 单词快递员</div>
     </div>
     <div id="m6Panel"></div>
   </div></div>`;
@@ -930,7 +930,7 @@ function initM6(root) {
     { key: "memory", icon: "🃏", name: "记忆翻牌", sub: "翻开卡片，记住配对", color: "peach" },
     { key: "whack", icon: "🔨", name: "打地鼠", sub: "敲对英文单词得分", color: "lemon" },
     { key: "jump", icon: "🦘", name: "单词跳跳岛", sub: ANIMALS.active ? "跳跃收集动物词卡" : "跳跃收集水果，闯三座小岛", color: "sky" },
-    { key: "delivery", icon: "🛵", name: "水果快递员", sub: "收集目标单词，送回左下角 SHOP", color: "mint" }
+    { key: "delivery", icon: "🛵", name: "单词快递员", sub: "收集目标单词，送回左下角 SHOP", color: "mint" }
   ];
   function go(key) {
     const tab = $$("#m6Tabs .tab", root).find(t => t.dataset.tab === key);
@@ -965,20 +965,28 @@ function initM6(root) {
     });
   }
 
-  /* ---- 记忆翻牌 ---- */
+  /* ---- 记忆翻牌（英文 ↔ 中文） ---- */
   function showMemory() {
-    const data = games.memory;
+    /* 中文缺省时用配对表补齐，兼容只有 emoji+en 的旧数据 */
+    const cnOf = {};
+    (games.pairs || []).forEach(p => { cnOf[String(p.en).toLowerCase()] = p.cn; });
+    const data = (games.memory || []).slice(0, 8).map(m => ({
+      en: m.en,
+      zh: m.zh || m.cn || cnOf[String(m.en).toLowerCase()] || m.emoji || m.en
+    }));
     const deck = [];
     data.forEach((p, i) => {
-      deck.push({ pair: i, face: p.cn || p.en });
-      deck.push({ pair: i, face: p.en });
+    patch-2
+      deck.push({ pair: i, face: p.en, kind: "en" });
+      deck.push({ pair: i, face: p.zh, kind: "zh" });
+
     });
     const shuffled = shuffle(deck);
     let first = null, lock = false, matched = 0;
     panel.innerHTML = `
-      <div class="mem-head"><span>配对成功 <b id="memMatched">0</b> / ${data.length}</span><span class="spacer"></span><span class="note">翻开两张，配对成功即保留</span></div>
+      <div class="mem-head"><span>配对成功 <b id="memMatched">0</b> / ${data.length}</span><span class="spacer"></span><span class="note">翻开两张，英文配中文，配对成功即保留</span></div>
       <div class="mem-grid" id="memGrid">
-        ${shuffled.map((c, i) => `<button class="mem-card" data-pair="${c.pair}"><span class="mem-face">${esc(c.face)}</span></button>`).join("")}
+        ${shuffled.map((c, i) => `<button class="mem-card" data-pair="${c.pair}"><span class="mem-face ${c.kind === "zh" ? "is-zh" : "is-en"}">${esc(c.face)}</span></button>`).join("")}
       </div>
       <div class="mem-foot"><button class="btn" id="memReset">🔄 重新洗牌</button></div>`;
     const cards = $$(".mem-card", panel);
@@ -1062,7 +1070,7 @@ function initM6(root) {
 
   function showJump() { JumpGame.mount(panel); }
 
-  /* ---- 水果快递员（第 6 关） ---- */
+  /* ---- 单词快递员（第 6 关） ---- */
   function showDelivery() {
     clearM6Timer();
     if (window.JumpGame) JumpGame.stop();
@@ -1074,7 +1082,7 @@ function initM6(root) {
     const enough = words.length >= 4;
     panel.innerHTML = `
       <div class="adv-head">
-        <div><div class="adv-title">🛵 水果快递员</div>
+        <div><div class="adv-title">🛵 单词快递员</div>
           <div class="adv-sub">方向键 / WASD 移动，找齐 3 个目标单词，送回左下角 SHOP。被幽灵撞到掉一颗心。</div></div>
         <div class="adv-score">⭐ 积分 <b>${score}</b></div>
       </div>
